@@ -53,10 +53,6 @@ export default function HomePage() {
         <WhyCounseling />
       </div>
 
-      <div className="relative bg-[var(--neu-base)] transition-colors duration-300">
-        <Courses />
-      </div>
-
       {/* E-Meeting & Physical Images */}
       <div className="relative bg-[var(--neu-base)] transition-colors duration-300 py-10 md:py-16">
         <div className="container mx-auto px-6 md:px-12 max-w-5xl">
@@ -73,6 +69,10 @@ export default function HomePage() {
 
       <div className="relative bg-[var(--neu-base)] transition-colors duration-300">
         <Packages />
+      </div>
+
+      <div className="relative bg-[var(--neu-base)] transition-colors duration-300">
+        <Courses />
       </div>
 
       <div className="relative bg-[var(--neu-base)] transition-colors duration-300">

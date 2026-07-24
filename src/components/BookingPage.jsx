@@ -86,6 +86,22 @@ const PACKAGES = [
       'Available by appointment only',
     ],
   },
+  {
+    id: 'quran-life-batch-02',
+    name: 'Quran & Life Batch 02 (Course)',
+    description: 'Full enrollment for Quran & Life Batch 02 live cohort course by Abdul Rehman Cheema.',
+    price: 'PKR 5,000',
+    duration: 'Live Cohort Course',
+    isPopular: false,
+    recommended: false,
+    features: [
+      'Live interactive cohort sessions',
+      'Recorded lectures provided after every class',
+      'Comprehensive PDF study notes & reading material',
+      'Direct Q&A with Abdul Rehman Cheema',
+      'Community access & continuous support',
+    ],
+  },
 ];
 
 const TIME_SLOTS = [

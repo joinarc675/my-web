@@ -43,6 +43,15 @@ const packages = [
     isPopular: false,
     recommended: true,
   },
+  {
+    id: 'quran-life-batch-02',
+    name: 'Quran & Life Batch 02 (Course)',
+    description: 'Live interactive cohort course bridging Quranic principles with emotional resilience. Recorded lectures & PDF notes included.',
+    price: 'PKR 5,000',
+    duration: 'Full Course Cohort',
+    isPopular: false,
+    isCourse: true,
+  },
 ];
 
 export default function Packages() {
@@ -122,7 +131,7 @@ export default function Packages() {
                   className={`w-full py-3 px-4 font-extrabold cursor-pointer transition-all duration-300 border-none ${pkg.isPopular || pkg.recommended ? 'neu-btn-primary' : 'neu-btn'
                     }`}
                 >
-                  Choose This Package
+                  {pkg.isCourse ? 'Enroll Now' : 'Choose This Package'}
                 </motion.button>
               </div>
             </motion.div>
