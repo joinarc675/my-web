@@ -93,7 +93,7 @@ export default function Courses() {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-              
+
               {/* Coming Soon & Pricing Badges */}
               <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-2">
                 <span className="flex items-center gap-1.5 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-[var(--neu-base)] bg-[var(--neu-accent)] rounded-full shadow-lg">
@@ -101,7 +101,7 @@ export default function Courses() {
                   Coming Soon
                 </span>
                 <span className="px-3 py-1 text-xs font-black tracking-wider text-white bg-black/60 backdrop-blur-md border border-white/20 rounded-full shadow-lg">
-                  PKR 5,000
+                  December 15
                 </span>
               </div>
             </div>

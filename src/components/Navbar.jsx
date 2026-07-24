@@ -62,7 +62,7 @@ export default function Navbar() {
             className="flex items-center gap-2 bg-transparent border-none cursor-pointer"
           >
             <img src={logo} alt="ARC Logo" width="32" height="32" decoding="async" className="h-8 w-auto" />
-            <span className="text-2xl font-bold tracking-tight transition-colors" style={{ color: 'var(--neu-accent)' }}>
+            <span className="text-2xl font-bold font-playfair tracking-tight transition-colors" style={{ color: 'var(--neu-accent)' }}>
               ARC
             </span>
           </button>
