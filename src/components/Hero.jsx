@@ -18,37 +18,32 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-[80vh] flex flex-col items-center justify-center pt-4 pb-12 md:pt-4 md:pb-16 overflow-hidden bg-[var(--neu-base)] transition-colors duration-300">
-      {/* Warm Gold/Amber Glow Blobs using Theme Colors */}
-      <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[550px] h-[550px] bg-[var(--neu-accent)]/10 blur-[130px] rounded-full pointer-events-none transition-colors duration-300" />
-      <div className="absolute bottom-[10%] left-[5%] w-80 h-80 bg-[var(--neu-accent)]/5 blur-[100px] rounded-full pointer-events-none transition-colors duration-300" />
-
       <div className="container relative z-10 mx-auto px-6 md:px-12 flex flex-col items-center text-center max-w-4xl space-y-6">
-
-        {/* On top: "Confusion to Clarity" heading */}
         <motion.div
-          className="space-y-4"
+          className="space-y-3 text-center"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider text-[var(--neu-accent)] bg-[var(--neu-accent)]/10 rounded-full border border-[var(--neu-border)] transition-colors duration-300">
-            Welcome Here!
-          </div>
-
-          <h1 className="text-left leading-tight text-[var(--neu-text)] transition-colors duration-300">
-            {/* "from" with gold highlight box */}
-            <span className="block mb-1">
-              <span className="inline-block italic font-bold text-xl md:text-2xl text-[var(--neu-base)] bg-[var(--neu-accent)] px-2 py-0.5 rounded-sm">
-                from
-              </span>
+          <h1 className="text-center leading-tight transition-colors duration-300">
+            {/* "FROM CONFUSION" — Poppins Light with wide tracking */}
+            <span className="block font-poppins font-light text-sm md:text-lg lg:text-xl tracking-[0.35em] md:tracking-[0.45em] uppercase text-[var(--neu-text)] opacity-90 transition-colors duration-300 pl-[0.35em] md:pl-[0.45em]">
+              FROM CONFUSION
             </span>
-            {/* "Confusion [to] Clarity" */}
-            <span className="flex items-center gap-3 flex-wrap">
-              <span className="text-4xl md:text-6xl font-extrabold text-[var(--neu-accent)]">Confusion</span>
-              <span className="inline-flex items-center italic justify-center text-sm md:text-base font-bold text-[var(--neu-accent)] border-2 border-[var(--neu-accent)] px-2 py-0.5 rounded-sm">
-                to
+
+            {/* Ornamental Thin Divider with Center Diamond */}
+            <div className="flex items-center justify-center max-w-xs md:max-w-md mx-auto opacity-70">
+              <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent via-[var(--neu-accent)] to-transparent" />
+              <span className="text-[var(--neu-accent)] text-xs md:text-sm">✦</span>
+              <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent via-[var(--neu-accent)] to-transparent" />
+            </div>
+
+            {/* "TO CLARITY" — Playfair Display Bold Serif */}
+            <span className="block font-playfair font-bold md:font-extrabold text-3xl md:text-5xl lg:text-6xl tracking-tight uppercase transition-colors duration-300 leading-none">
+              <span className="text-[var(--neu-text)] mr-3 md:mr-5">TO</span>
+              <span className="bg-gradient-to-r from-[#b8791f] via-[#d9921f] to-[#f0a838] dark:from-[#f0a838] dark:via-[#ffd67a] dark:to-[#b8791f] bg-clip-text text-transparent drop-shadow-sm">
+                CLARITY
               </span>
-              <span className="text-4xl md:text-6xl font-extrabold text-[var(--neu-accent)]">Clarity</span>
             </span>
           </h1>
         </motion.div>
