@@ -27,6 +27,7 @@ export default function Navbar() {
 
   const links = [
     { name: 'Why Counselling?', href: '#why-counseling' },
+    { name: 'Courses', href: '#courses' },
     { name: 'Packages', href: '#packages' },
     { name: 'About Me', href: '#about-me' },
   ];

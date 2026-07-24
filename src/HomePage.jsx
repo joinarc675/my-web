@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import WhyCounseling from './components/WhyCounseling';
+import Courses from './components/Courses';
 import Packages from './components/Packages';
 import AboutMe from './components/AboutMe';
 import SocialMedia from './components/SocialMedia';
@@ -50,6 +51,10 @@ export default function HomePage() {
 
       <div className="relative bg-[var(--neu-base)] transition-colors duration-300">
         <WhyCounseling />
+      </div>
+
+      <div className="relative bg-[var(--neu-base)] transition-colors duration-300">
+        <Courses />
       </div>
 
       {/* E-Meeting & Physical Images */}

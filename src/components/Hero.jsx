@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 // NOTE: This placeholder male model photo should be swapped for Abdul Rehman Cheema's actual photo once received from the client.
-import therapistImg from '../assets/IMG_7991.webp';
+import therapistImg from '../assets/hero-section.webp';
 
 export default function Hero() {
   const navigate = useNavigate();
