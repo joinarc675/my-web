@@ -1,6 +1,6 @@
 import { Mail, Phone, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.webp';
 
 export default function Footer() {
   return (
@@ -11,7 +11,7 @@ export default function Footer() {
           {/* Brand Col */}
           <div className="space-y-4">
             <a href="#" className="flex items-center gap-2">
-              <img src={logo} alt="ARC Logo" className="h-8 w-auto" />
+              <img src={logo} alt="ARC Logo" width="32" height="32" loading="lazy" decoding="async" className="h-8 w-auto" />
               <span className="text-2xl font-bold tracking-tight transition-colors" style={{ color: 'var(--neu-accent)' }}>
                 ARC
               </span>

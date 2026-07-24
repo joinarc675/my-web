@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Clock, User, Mail, Phone, Landmark, Upload, CheckCircle, ArrowLeft, AlertCircle, Copy, Check, QrCode } from 'lucide-react';
 import Navbar from './Navbar';
 import { supabase } from '../lib/supabaseClient';
-import ublQrImg from '../assets/ubl-qr.png';
-import easypaisaQrImg from '../assets/easypaisa-qr.png';
+import ublQrImg from '../assets/ubl-qr.webp';
+import easypaisaQrImg from '../assets/easypaisa-qr.webp';
 
 const PACKAGES = [
   {

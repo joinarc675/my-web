@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 // NOTE: This placeholder male model photo should be swapped for Abdul Rehman Cheema's actual photo once received from the client.
-import therapistImg from '../assets/IMG_7991.jpeg';
+import therapistImg from '../assets/IMG_7991.webp';
 
 export default function Hero() {
   const navigate = useNavigate();
@@ -65,6 +65,10 @@ export default function Hero() {
               src={therapistImg}
               alt="Abdul Rehman Cheema — Islamic Counsellor"
               className="object-cover w-full h-full grayscale-[10%] contrast-[1.05]"
+              fetchpriority="high"
+              decoding="async"
+              width="360"
+              height="450"
             />
             {/* Dark gradient overlay that adjusts to the base theme background */}
             <div className="absolute inset-0 bg-gradient-to-t from-[var(--neu-base)] via-transparent to-transparent opacity-40 transition-all duration-300"></div>

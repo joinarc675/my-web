@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../ThemeContext';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.webp';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +60,7 @@ export default function Navbar() {
             }}
             className="flex items-center gap-2 bg-transparent border-none cursor-pointer"
           >
-            <img src={logo} alt="ARC Logo" className="h-8 w-auto" />
+            <img src={logo} alt="ARC Logo" width="32" height="32" decoding="async" className="h-8 w-auto" />
             <span className="text-2xl font-bold tracking-tight transition-colors" style={{ color: 'var(--neu-accent)' }}>
               ARC
             </span>
