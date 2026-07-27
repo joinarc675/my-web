@@ -85,12 +85,13 @@ export default function Hero() {
               Islamic counselor blending Psychology, Neuroscience, and Shariah to provide practical guidance.
             </p>
 
+
             <p className="text-base md:text-lg max-w-2xl mx-auto leading-relaxed text-[var(--neu-text-muted)] transition-colors duration-300" style={{ textDecoration: 'line-through' }}>
               Medical or Clinical Treatment
             </p>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-2.5 max-w-xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-2.6 max-w-xl mx-auto">
             {tags.map((tag) => (
               <span
                 key={tag}
