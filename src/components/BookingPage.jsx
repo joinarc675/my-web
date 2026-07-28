@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Clock, User, Mail, Phone, Landmark, Upload, CheckCircle, ArrowLeft, AlertCircle, Copy, Check, QrCode } from 'lucide-react';
 import Navbar from './Navbar';
 import { supabase } from '../lib/supabaseClient';
+import { trackLead } from '../lib/pixel';
 import ublQrImg from '../assets/ubl-qr.webp';
 import easypaisaQrImg from '../assets/easypaisa-qr.webp';
 
@@ -304,6 +305,21 @@ export default function BookingPage() {
       console.log('--- ARC BOOKING SUBMISSION PAYLOAD ---');
       console.log(JSON.stringify(bookingPayload, null, 2));
       console.log('--------------------------------------');
+
+      // Trigger Meta Pixel Lead Event
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'Lead', {
+          content_name: selectedPackage.name,
+          value: selectedPackage.price,
+          currency: 'PKR'
+        });
+      } else {
+        trackLead({
+          content_name: selectedPackage.name,
+          value: selectedPackage.price,
+          currency: 'PKR'
+        });
+      }
 
 
       // Build display data from local form state (no server row read-back)
