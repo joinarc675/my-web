@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, User, Mail, Phone, Landmark, Upload, CheckCircle, ArrowLeft, AlertCircle, Copy, Check, QrCode } from 'lucide-react';
+import { Calendar, Clock, User, Mail, Phone, CheckCircle, ArrowLeft, AlertCircle } from 'lucide-react';
 import Navbar from './Navbar';
 import { supabase } from '../lib/supabaseClient';
 import { trackLead } from '../lib/pixel';
-import ublQrImg from '../assets/ubl-qr.webp';
-import easypaisaQrImg from '../assets/easypaisa-qr.webp';
 
 const PACKAGES = [
   {
@@ -127,18 +125,6 @@ export default function BookingPage() {
   const [preferredDate, setPreferredDate] = useState('');
   const [preferredTimeSlot, setPreferredTimeSlot] = useState('');
   const [matter, setMatter] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('bank');
-  const [screenshot, setScreenshot] = useState(null);
-  const [screenshotPreview, setScreenshotPreview] = useState('');
-  const [copiedField, setCopiedField] = useState(null);
-
-  const handleCopy = (text, fieldKey) => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(text);
-    }
-    setCopiedField(fieldKey);
-    setTimeout(() => setCopiedField(null), 2000);
-  };
 
   // Validation and UI states
   const [errors, setErrors] = useState({});
@@ -157,28 +143,6 @@ export default function BookingPage() {
       }
     }
   }, [initialPackageId]);
-
-  // Handle file upload
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        setErrors(prev => ({ ...prev, screenshot: 'Please upload an image file only.' }));
-        return;
-      }
-      setScreenshot(file);
-      setErrors(prev => {
-        const copy = { ...prev };
-        delete copy.screenshot;
-        return copy;
-      });
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setScreenshotPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   // Scroll to Form section helper
   const scrollToForm = () => {
@@ -223,10 +187,6 @@ export default function BookingPage() {
       newErrors.preferredTimeSlot = 'Please select a preferred time slot.';
     }
 
-    if (paymentMethod === 'bank' && !screenshot) {
-      newErrors.screenshot = 'Please upload a bank transfer receipt screenshot.';
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -247,38 +207,7 @@ export default function BookingPage() {
     setSubmitError('');
 
     try {
-      let receiptPath = null;
-
-      // 1. Handle file upload if paying via bank transfer
-      if (paymentMethod === 'bank') {
-        const fileName = `${Date.now()}-${screenshot.name}`;
-
-        let uploadData, uploadError;
-        try {
-          ({ data: uploadData, error: uploadError } = await supabase.storage
-            .from('payment-receipts')
-            .upload(fileName, screenshot));
-        } catch (fetchErr) {
-          throw new Error(
-            'Receipt upload failed: Could not reach storage server. ' +
-            'Please ensure the payment-receipts bucket exists in your Supabase project, then try again. ' +
-            `(${fetchErr.message})`
-          );
-        }
-
-        // Guard against both explicit errors and silent failures.
-        if (uploadError) {
-          throw new Error(`Receipt upload failed: ${uploadError.message}`);
-        }
-        if (!uploadData?.id || !uploadData?.path) {
-          throw new Error('Receipt upload failed: server did not confirm the file was saved. Please try again.');
-        }
-
-        receiptPath = uploadData.path;
-      }
-
-
-      // 2. Prepare the payload for bookings insert
+      // 1. Prepare the payload for bookings insert
       const bookingPayload = {
         package_id: selectedPackage.id,
         package_name: selectedPackage.name,
@@ -289,10 +218,10 @@ export default function BookingPage() {
         preferred_date: preferredDate,
         preferred_time_slot: preferredTimeSlot,
         matter: matter || null,
-        receipt_path: receiptPath || null
+        receipt_path: null
       };
 
-      // 3. Insert into public.bookings (no .select() — anon has INSERT-only privilege)
+      // 2. Insert into public.bookings (no .select() — anon has INSERT-only privilege)
       const { error: insertError } = await supabase
         .from('bookings')
         .insert([bookingPayload]);
@@ -321,14 +250,12 @@ export default function BookingPage() {
         });
       }
 
-
       // Build display data from local form state (no server row read-back)
       setSubmittedData({
         packageName: selectedPackage.name,
         fullName,
         preferredDate,
         preferredTimeSlot,
-        paymentMethod,
       });
       setIsSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -366,11 +293,8 @@ export default function BookingPage() {
             <p className="text-[var(--neu-text-muted)] leading-relaxed mb-6">
               Thank you, <span className="font-bold text-[var(--neu-text)]">{submittedData?.fullName}</span>.
               We have logged your request for the <span className="font-semibold text-[var(--neu-accent)]">{submittedData?.packageName}</span>.
-              We'll review your preferred slot ({submittedData?.preferredDate} - {submittedData?.preferredTimeSlot}) and confirm shortly.
+              We'll review your preferred slot ({submittedData?.preferredDate} - {submittedData?.preferredTimeSlot}) and get in touch with you shortly to confirm your booking.
             </p>
-            <div className="p-4 rounded-xl mb-6 bg-amber-500/10 border border-amber-500/20 text-xs text-[var(--neu-text-muted)] text-left">
-              <strong>Bank Transfer Verification Pending:</strong> Since you paid via Bank Transfer, our team will review the uploaded receipt. Your session status is marked as <strong>Pending Verification</strong>.
-            </div>
             <button
               onClick={() => navigate('/')}
               className="neu-btn px-6 py-2.5 text-sm cursor-pointer"
@@ -390,7 +314,7 @@ export default function BookingPage() {
                 </span>
               </h1>
               <p className="text-[var(--neu-text-muted)] max-w-xl mx-auto">
-                Follow our <span className="text-[var(--neu-accent)] font-bold">secure three-step process</span> to reserve your counselling slot.
+                Follow our <span className="text-[var(--neu-accent)] font-bold">simple two-step process</span> to reserve your counselling slot.
               </p>
             </div>
 
@@ -736,247 +660,6 @@ export default function BookingPage() {
               </div>
             </div>
 
-            {/* STEP 3: PAYMENT METHOD */}
-            <div className="space-y-6 pt-6">
-              <div className="flex items-center gap-3 border-b border-[var(--neu-border)] pb-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs bg-[var(--neu-accent)] text-[var(--neu-base)]">3</span>
-                <h2 className="text-xl font-bold tracking-wide">Payment Method</h2>
-              </div>
-
-              <div className="flex items-center gap-4 p-5 rounded-xl border border-[var(--neu-border-solid)] bg-[var(--neu-card-bg)] shadow-[0_0_15px_rgba(240,168,56,0.1)]">
-                <div className="w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 bg-[var(--neu-accent)] border-[var(--neu-accent)]">
-                  <div className="w-2 h-2 rounded-full bg-[var(--neu-base)]" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm font-bold flex items-center gap-2">
-                    <Landmark className="w-4 h-4 text-[var(--neu-accent)]" /> Bank Transfer
-                  </h3>
-                  <p className="text-[10px] text-[var(--neu-text-faint)] mt-1">Transfer directly to our bank account</p>
-                </div>
-              </div>
-
-              {/* Bank Transfer details */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key="bank"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="space-y-6 p-5 rounded-xl bg-[var(--neu-card-bg)] border border-[var(--neu-border)]"
-                >
-                  {/* Payment Details Display */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-[var(--neu-border)] pb-4">
-
-                    {/* UBL Bank Transfer */}
-                    <div className="flex flex-col justify-between space-y-3 p-4 rounded-lg bg-[var(--neu-base)] border border-[var(--neu-border)]">
-                      <div>
-                        <span className="text-[var(--neu-accent)] uppercase text-[9px] tracking-wider font-bold block mb-3">🏦 Bank Transfer (UBL)</span>
-                        <div className="space-y-3 text-xs">
-                          <div>
-                            <span className="text-[var(--neu-text-faint)] uppercase text-[9px] tracking-wider block">Account Title</span>
-                            <strong className="text-[var(--neu-text)] text-sm">Abdul Rehman</strong>
-                          </div>
-                          <div>
-                            <span className="text-[var(--neu-text-faint)] uppercase text-[9px] tracking-wider block">Bank Name</span>
-                            <strong className="text-[var(--neu-text)] text-sm">United Bank Limited (UBL)</strong>
-                          </div>
-                          <div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-[var(--neu-text-faint)] uppercase text-[9px] tracking-wider block">Account Number</span>
-                              <button
-                                type="button"
-                                onClick={() => handleCopy('1064309938925', 'ubl_acc')}
-                                title={copiedField === 'ubl_acc' ? 'Copied!' : 'Copy Account Number'}
-                                className="p-1.5 rounded bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] hover:bg-[var(--neu-accent)] hover:text-[var(--neu-base)] transition-all cursor-pointer border-none flex items-center justify-center"
-                              >
-                                {copiedField === 'ubl_acc' ? (
-                                  <Check className="w-3.5 h-3.5 text-green-500" />
-                                ) : (
-                                  <Copy className="w-3.5 h-3.5" />
-                                )}
-                              </button>
-                            </div>
-                            <strong className="text-[var(--neu-text)] text-sm tracking-widest block mt-0.5">1064309938925</strong>
-                          </div>
-                          <div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-[var(--neu-text-faint)] uppercase text-[9px] tracking-wider block">IBAN</span>
-                              <button
-                                type="button"
-                                onClick={() => handleCopy('PK08UNIL0109000309938925', 'ubl_iban')}
-                                title={copiedField === 'ubl_iban' ? 'Copied!' : 'Copy IBAN'}
-                                className="p-1.5 rounded bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] hover:bg-[var(--neu-accent)] hover:text-[var(--neu-base)] transition-all cursor-pointer border-none flex items-center justify-center"
-                              >
-                                {copiedField === 'ubl_iban' ? (
-                                  <Check className="w-3.5 h-3.5 text-green-500" />
-                                ) : (
-                                  <Copy className="w-3.5 h-3.5" />
-                                )}
-                              </button>
-                            </div>
-                            <strong className="text-[var(--neu-text)] text-xs tracking-wider block mt-0.5 break-all">PK08 UNIL 0109 0003 0993 8925</strong>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* QR Code section inside UBL card */}
-                      <div className="pt-3 border-t border-[var(--neu-border)] flex flex-col items-center text-center">
-                        <span className="text-[var(--neu-text-faint)] uppercase text-[9px] tracking-wider font-bold mb-2 flex items-center gap-1">
-                          <QrCode className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Scan QR Code to Pay (UBL)
-                        </span>
-                        <div className="p-2 bg-white rounded-xl shadow-md border border-stone-200 inline-block">
-                          <img
-                            src={ublQrImg}
-                            alt="UBL Payment QR Code - Abdul Rehman 8925"
-                            className="w-36 h-36 object-contain rounded-lg"
-                          />
-                        </div>
-                        <span className="text-[10px] font-bold text-[var(--neu-text)] mt-1.5">
-                          Abdul Rehman - 8925
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* EasyPaisa */}
-                    <div className="flex flex-col justify-between space-y-3 p-4 rounded-lg bg-[var(--neu-base)] border border-[var(--neu-border)]">
-                      <div>
-                        <span className="text-[var(--neu-accent)] uppercase text-[9px] tracking-wider font-bold block mb-3">📱 EasyPaisa</span>
-                        <div className="space-y-3 text-xs">
-                          <div>
-                            <span className="text-[var(--neu-text-faint)] uppercase text-[9px] tracking-wider block">Account Title</span>
-                            <strong className="text-[var(--neu-text)] text-sm">Abdur Rehman</strong>
-                          </div>
-                          <div>
-                            <span className="text-[var(--neu-text-faint)] uppercase text-[9px] tracking-wider block">Bank Title</span>
-                            <strong className="text-[var(--neu-text)] text-sm">EasyPaisa</strong>
-                          </div>
-                          <div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-[var(--neu-text-faint)] uppercase text-[9px] tracking-wider block">Mobile Number</span>
-                              <button
-                                type="button"
-                                onClick={() => handleCopy('03458612538', 'ep_mobile')}
-                                title={copiedField === 'ep_mobile' ? 'Copied!' : 'Copy Mobile Number'}
-                                className="p-1.5 rounded bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] hover:bg-[var(--neu-accent)] hover:text-[var(--neu-base)] transition-all cursor-pointer border-none flex items-center justify-center"
-                              >
-                                {copiedField === 'ep_mobile' ? (
-                                  <Check className="w-3.5 h-3.5 text-green-500" />
-                                ) : (
-                                  <Copy className="w-3.5 h-3.5" />
-                                )}
-                              </button>
-                            </div>
-                            <strong className="text-[var(--neu-text)] text-sm tracking-widest block mt-0.5">0345 8612538</strong>
-                          </div>
-                          <div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-[var(--neu-text-faint)] uppercase text-[9px] tracking-wider block">IBAN</span>
-                              <button
-                                type="button"
-                                onClick={() => handleCopy('PK49TMFB0000000082342367', 'ep_iban')}
-                                title={copiedField === 'ep_iban' ? 'Copied!' : 'Copy IBAN'}
-                                className="p-1.5 rounded bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] hover:bg-[var(--neu-accent)] hover:text-[var(--neu-base)] transition-all cursor-pointer border-none flex items-center justify-center"
-                              >
-                                {copiedField === 'ep_iban' ? (
-                                  <Check className="w-3.5 h-3.5 text-green-500" />
-                                ) : (
-                                  <Copy className="w-3.5 h-3.5" />
-                                )}
-                              </button>
-                            </div>
-                            <strong className="text-[var(--neu-text)] text-xs tracking-wider block mt-0.5 break-all">PK49 TMFB 0000 0000 8234 2367</strong>
-                          </div>
-                        </div>
-
-                        {/* QR Code section inside EasyPaisa card */}
-                        <div className="pt-3 border-t border-[var(--neu-border)] flex flex-col items-center text-center">
-                          <span className="text-[var(--neu-text-faint)] uppercase text-[9px] tracking-wider font-bold mb-2 flex items-center gap-1">
-                            <QrCode className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Scan QR Code to Pay (EasyPaisa)
-                          </span>
-                          <div className="p-2 bg-white rounded-xl shadow-md border border-stone-200 inline-block">
-                            <img
-                              src={easypaisaQrImg}
-                              alt="EasyPaisa Payment QR Code - ABDUR REHMAN"
-                              className="w-36 h-36 object-contain rounded-lg"
-                            />
-                          </div>
-                          <span className="text-[10px] font-bold text-[var(--neu-text)] mt-1.5">
-                            ABDUR REHMAN - 2538
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-
-                  {/* Screenshot File Upload */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] block">
-                      Upload Receipt Screenshot <span className="text-[var(--neu-accent)]">*</span>
-                    </label>
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                      <label className="flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-dashed border-[var(--neu-accent)] hover:bg-[var(--neu-accent)]/5 cursor-pointer text-sm transition-all text-[var(--neu-accent)] bg-transparent">
-                        <Upload className="w-4 h-4" />
-                        <span>Choose Receipt Image</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileChange}
-                          className="hidden"
-                        />
-                      </label>
-
-                      {/* Screenshot Thumbnail Preview */}
-                      {screenshotPreview && (
-                        <div className="flex items-center gap-3 p-2 rounded-lg bg-[var(--neu-base)] border border-[var(--neu-border)]">
-                          <img
-                            src={screenshotPreview}
-                            alt="Receipt Preview"
-                            className="w-12 h-12 object-cover rounded-md border border-[var(--neu-border)]"
-                          />
-                          <div className="text-left">
-                            <span className="text-xs font-semibold block text-[var(--neu-text)] max-w-[160px] truncate">{screenshot?.name}</span>
-                            <span className="text-[10px] text-[var(--neu-text-faint)] block">{(screenshot?.size / 1024).toFixed(1)} KB</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    {errors.screenshot && (
-                      <p className="text-xs text-amber-500/90 flex items-center gap-1 mt-1">
-                        <AlertCircle className="w-3 h-3" /> {errors.screenshot}
-                      </p>
-                    )}
-                    <p className="text-[9px] text-[var(--neu-text-faint)] leading-normal mt-1">
-                      Please upload an image screenshot of your mobile banking transfer or deposit slip. Max size 5MB.
-                    </p>
-                  </div>
-
-                  <p className="text-xs text-[var(--neu-text-muted)] italic leading-relaxed border-t border-[var(--neu-border)] pt-4">
-                    ⚠️ <strong>Note:</strong> Your session will be booked under "Pending Verification" until our accounts team verifies your transfer screenshot.
-                  </p>
-
-                  <a
-                    href="https://wa.me/923458612538"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-3 p-3 rounded-xl bg-green-500/8 border border-green-500/20 hover:border-green-500/50 hover:bg-green-500/12 transition-all group"
-                  >
-                    <span className="text-lg leading-none">🌍</span>
-                    <div className="text-left">
-                      <p className="text-xs font-bold text-[var(--neu-text)] group-hover:text-green-400 transition-colors">
-                        International Clients
-                      </p>
-                      <p className="text-[10px] text-[var(--neu-text-muted)] leading-relaxed">
-                        For international transactions, please contact us on WhatsApp to arrange payment.
-                      </p>
-                    </div>
-                    <span className="ml-auto text-green-500 text-lg">↗</span>
-                  </a>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
             {/* Submit Section */}
             <div className="pt-6 text-center space-y-4">
               <button
@@ -984,7 +667,7 @@ export default function BookingPage() {
                 disabled={isSubmitting}
                 className="w-full sm:w-auto px-12 py-4 rounded-xl text-base font-extrabold cursor-pointer transition-all duration-300 neu-btn-primary disabled:opacity-50 disabled:cursor-not-allowed border-none"
               >
-                {isSubmitting ? 'Submitting...' : 'Submit for Verification'}
+                {isSubmitting ? 'Submitting...' : 'Confirm Booking Request'}
               </button>
 
               <p className="text-[10px] text-[var(--neu-text-faint)] max-w-sm mx-auto leading-normal">

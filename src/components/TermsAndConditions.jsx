@@ -34,8 +34,8 @@ const SECTIONS = [
     title: 'Payments & Refunds',
     subsections: [
       {
-        heading: 'Payment Methods',
-        body: 'We accept payments via Bank Transfer (UBL) and EasyPaisa. All payment details are provided during the booking process. Sessions are confirmed after successful payment verification.',
+        heading: 'Payment Details',
+        body: 'Payment instructions and details are shared directly with clients upon booking request confirmation. Sessions are confirmed after payment is completed.',
       },
       {
         heading: 'Refund Policy',
