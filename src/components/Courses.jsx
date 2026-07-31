@@ -101,7 +101,7 @@ export default function Courses() {
                   Coming Soon
                 </span>
                 <span className="px-3 py-1 text-xs font-black tracking-wider text-white bg-black/60 backdrop-blur-md border border-white/20 rounded-full shadow-lg">
-                  December 15
+                  November 15
                 </span>
               </div>
             </div>
@@ -143,7 +143,7 @@ export default function Courses() {
               <div className="space-y-3 pt-2">
                 <div className="flex items-baseline justify-between">
                   <span className="text-xs uppercase font-bold text-[var(--neu-text-muted)]">Enrollment Fee</span>
-                  <span className="text-2xl font-black text-[var(--neu-accent)]">PKR 5,000</span>
+                  <span className="text-2xl font-black text-[var(--neu-accent)]">PKR 100</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -238,7 +238,7 @@ export default function Courses() {
                   }}
                   className="px-5 py-2.5 text-xs font-extrabold rounded-lg bg-[var(--neu-accent)] text-[var(--neu-base)] border-none cursor-pointer hover:opacity-90 transition-opacity"
                 >
-                  Enroll in Batch 02 (PKR 5,000)
+                  Enroll in Batch 02 (PKR 100)
                 </button>
               </div>
             </motion.div>

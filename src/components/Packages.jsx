@@ -47,7 +47,7 @@ const packages = [
     id: 'quran-life-batch-02',
     name: 'Quran & Life Batch 02 (Course)',
     description: 'Live interactive cohort course bridging Quranic principles with emotional resilience. Recorded lectures & PDF notes included.',
-    price: 'PKR 5,000',
+    price: 'PKR 100',
     duration: 'Full Course Cohort',
     isPopular: false,
     isCourse: true,
@@ -56,7 +56,7 @@ const packages = [
     id: 'invite-us',
     name: 'Invite Us (Motivational Lecture)',
     description: 'Invite Abdul Rehman Cheema to your office, university, school, or college for an empowering motivational lecture & interactive session.',
-    price: 'On Request',
+    price: 'PKR 125,000',
     duration: 'Office / Campus Event',
     isPopular: false,
     isLecture: true,
@@ -140,7 +140,7 @@ export default function Packages() {
                   className={`w-full py-3 px-4 font-extrabold cursor-pointer transition-all duration-300 border-none ${pkg.isPopular || pkg.recommended ? 'neu-btn-primary' : 'neu-btn'
                     }`}
                 >
-                  {pkg.isCourse ? 'Enroll Now' : pkg.id === 'invite-us' ? 'Invite Us Now' : 'Choose This Package'}
+                  {pkg.isCourse ? 'Enroll Now' : 'Choose This Package'}
                 </motion.button>
               </div>
             </motion.div>
