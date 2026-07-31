@@ -101,6 +101,22 @@ const PACKAGES = [
       'Community access & continuous support',
     ],
   },
+  {
+    id: 'invite-us',
+    name: 'Invite Us (Motivational Lecture)',
+    description: 'Invite Abdul Rehman Cheema to your office, university, school, or college for an empowering motivational lecture & interactive seminar.',
+    price: 'On Request',
+    duration: 'Office / Campus Event',
+    isPopular: false,
+    recommended: false,
+    features: [
+      'Available for Offices, Universities, Schools & Colleges',
+      'Tailored motivational lectures & leadership keynotes',
+      'Islamic wisdom, emotional resilience & self-growth',
+      'Live Q&A and interactive audience engagement',
+      'Customized topics based on your institution’s needs',
+    ],
+  },
 ];
 
 const TIME_SLOTS = [

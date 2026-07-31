@@ -10,6 +10,7 @@ import SocialMedia from './components/SocialMedia';
 import Footer from './components/Footer';
 import eMeetingImg from './assets/E-meet.webp';
 import physicalImg from './assets/P-meet.webp';
+import inviteUsImg from './assets/Invite-us.webp';
 
 export default function HomePage() {
   const location = useLocation();
@@ -38,15 +39,18 @@ export default function HomePage() {
         <WhyCounseling />
       </div>
 
-      {/* E-Meeting & Physical Images */}
+      {/* E-Meeting, Physical & Invite Us Images */}
       <div className="relative bg-[var(--neu-base)] transition-colors duration-300 py-10 md:py-16">
-        <div className="container mx-auto px-6 md:px-12 max-w-5xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-            <div className="group relative overflow-hidden rounded-xl border border-[var(--neu-border)] transition-all duration-300 hover:border-[var(--neu-accent)]">
+        <div className="container mx-auto px-6 md:px-12 max-w-6xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div className="group relative overflow-hidden rounded-xl border border-[var(--neu-border)] transition-all duration-300 hover:border-[var(--neu-accent)] shadow-md">
               <img src={eMeetingImg} alt="E-Meeting Counselling Session — Online Consultation with Abdul Rehman Cheema" loading="lazy" decoding="async" className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
-            <div className="group relative overflow-hidden rounded-xl border border-[var(--neu-border)] transition-all duration-300 hover:border-[var(--neu-accent)]">
+            <div className="group relative overflow-hidden rounded-xl border border-[var(--neu-border)] transition-all duration-300 hover:border-[var(--neu-accent)] shadow-md">
               <img src={physicalImg} alt="Physical In-Person Counselling Meeting — Consultation with Abdul Rehman Cheema" loading="lazy" decoding="async" className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" />
+            </div>
+            <div className="group relative overflow-hidden rounded-xl border border-[var(--neu-border)] transition-all duration-300 hover:border-[var(--neu-accent)] shadow-md">
+              <img src={inviteUsImg} alt="Invite Us — Motivational Lecture at Office, University, School or College" loading="lazy" decoding="async" className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" />
             </div>
           </div>
         </div>

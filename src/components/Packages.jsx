@@ -52,6 +52,15 @@ const packages = [
     isPopular: false,
     isCourse: true,
   },
+  {
+    id: 'invite-us',
+    name: 'Invite Us (Motivational Lecture)',
+    description: 'Invite Abdul Rehman Cheema to your office, university, school, or college for an empowering motivational lecture & interactive session.',
+    price: 'On Request',
+    duration: 'Office / Campus Event',
+    isPopular: false,
+    isLecture: true,
+  },
 ];
 
 export default function Packages() {
@@ -131,7 +140,7 @@ export default function Packages() {
                   className={`w-full py-3 px-4 font-extrabold cursor-pointer transition-all duration-300 border-none ${pkg.isPopular || pkg.recommended ? 'neu-btn-primary' : 'neu-btn'
                     }`}
                 >
-                  {pkg.isCourse ? 'Enroll Now' : 'Choose This Package'}
+                  {pkg.isCourse ? 'Enroll Now' : pkg.id === 'invite-us' ? 'Invite Us Now' : 'Choose This Package'}
                 </motion.button>
               </div>
             </motion.div>
