@@ -485,7 +485,7 @@ export default function BookingPage() {
                   />
                 </div>
 
-                {/* Select Session / Package (All inside ONE Single Card) */}
+                {/* Select Session / Package (Single Card with 2-Column Grid) */}
                 <div className="col-span-2 space-y-1">
                   <label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center justify-between">
                     <span className="flex items-center gap-1">
@@ -498,54 +498,56 @@ export default function BookingPage() {
                     )}
                   </label>
 
-                  {/* ONE Single Card Container for all packages */}
-                  <div className="rounded-lg sm:rounded-xl bg-[var(--neu-card-bg)] border border-[var(--neu-border)] overflow-hidden divide-y divide-[var(--neu-border)]/40 shadow-xs">
-                    {PACKAGES.map((pkg) => {
-                      const isSelected = selectedPackage?.id === pkg.id;
-                      return (
-                        <div
-                          key={pkg.id}
-                          onClick={() => {
-                            setSelectedPackage(pkg);
-                            setErrors(prev => {
-                              const copy = { ...prev };
-                              delete copy.package;
-                              return copy;
-                            });
-                          }}
-                          className={`flex items-center justify-between px-3 py-2 sm:py-2.5 transition-colors duration-150 cursor-pointer ${isSelected
-                            ? 'bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] font-semibold'
-                            : 'hover:bg-[var(--neu-base)]/40 text-[var(--neu-text)]'
-                            }`}
-                        >
-                          <div className="flex items-center gap-2 min-w-0">
-                            {/* Radio Circle */}
-                            <div
-                              className={`w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border flex items-center justify-center shrink-0 transition-all ${isSelected
-                                ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]'
-                                : 'border-gray-400 dark:border-gray-500 bg-transparent'
-                                }`}
-                            >
-                              {isSelected && <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[var(--neu-base)]" />}
+                  {/* ONE Single Card Container wrapping 2-column grid on all screen sizes */}
+                  <div className="rounded-lg sm:rounded-xl bg-[var(--neu-card-bg)] border border-[var(--neu-border)] p-1 sm:p-2 shadow-xs">
+                    <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
+                      {PACKAGES.map((pkg) => {
+                        const isSelected = selectedPackage?.id === pkg.id;
+                        return (
+                          <div
+                            key={pkg.id}
+                            onClick={() => {
+                              setSelectedPackage(pkg);
+                              setErrors(prev => {
+                                const copy = { ...prev };
+                                delete copy.package;
+                                return copy;
+                              });
+                            }}
+                            className={`flex items-center justify-between px-2 py-1.5 sm:px-3 sm:py-2.5 rounded-md sm:rounded-lg transition-colors duration-150 cursor-pointer ${isSelected
+                              ? 'bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] font-semibold'
+                              : 'hover:bg-[var(--neu-base)]/40 text-[var(--neu-text)]'
+                              }`}
+                          >
+                            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                              {/* Radio Circle */}
+                              <div
+                                className={`w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border flex items-center justify-center shrink-0 transition-all ${isSelected
+                                  ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]'
+                                  : 'border-gray-400 dark:border-gray-500 bg-transparent'
+                                  }`}
+                              >
+                                {isSelected && <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[var(--neu-base)]" />}
+                              </div>
+
+                              <span className="text-[10px] sm:text-xs font-medium leading-tight">
+                                {pkg.name}
+                              </span>
                             </div>
 
-                            <span className="text-[11px] sm:text-xs truncate font-medium">
-                              {pkg.name}
-                            </span>
+                            {(pkg.price || pkg.duration) && (
+                              <span className={`text-[8px] sm:text-[10px] shrink-0 ml-1 ${isSelected ? 'text-[var(--neu-accent)] font-bold' : 'text-[var(--neu-text-muted)]'}`}>
+                                {pkg.price || pkg.duration}
+                              </span>
+                            )}
                           </div>
-
-                          {(pkg.price || pkg.duration) && (
-                            <span className={`text-[9px] sm:text-[10px] shrink-0 ml-2 ${isSelected ? 'text-[var(--neu-accent)] font-bold' : 'text-[var(--neu-text-muted)]'}`}>
-                              {pkg.price || pkg.duration}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
-                {/* Brief Problem / Reason for Booking (Single Card Radio List) */}
+                {/* Brief Problem / Reason for Booking (Single Card with 3-Column Grid) */}
                 <div className="col-span-2 space-y-1">
                   <label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center justify-between">
                     <span className="flex items-center gap-1">
@@ -553,44 +555,46 @@ export default function BookingPage() {
                     </span>
                   </label>
 
-                  {/* ONE Single Card Container for Problem Options */}
-                  <div className="rounded-lg sm:rounded-xl bg-[var(--neu-card-bg)] border border-[var(--neu-border)] overflow-hidden divide-y divide-[var(--neu-border)]/40 shadow-xs">
-                    {PROBLEM_OPTIONS.map((opt) => {
-                      const isSelected = selectedProblemOption === opt;
-                      return (
-                        <div
-                          key={opt}
-                          onClick={() => {
-                            setSelectedProblemOption(opt);
-                            if (opt !== 'Something else (type below)') {
-                              setBriefProblem(opt);
-                            } else {
-                              setBriefProblem(customProblem);
-                            }
-                          }}
-                          className={`flex items-center justify-between px-3 py-2 sm:py-2.5 transition-colors duration-150 cursor-pointer ${isSelected
-                            ? 'bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] font-semibold'
-                            : 'hover:bg-[var(--neu-base)]/40 text-[var(--neu-text)]'
-                            }`}
-                        >
-                          <div className="flex items-center gap-2 min-w-0">
-                            {/* Radio Circle */}
-                            <div
-                              className={`w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border flex items-center justify-center shrink-0 transition-all ${isSelected
-                                ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]'
-                                : 'border-gray-400 dark:border-gray-500 bg-transparent'
-                                }`}
-                            >
-                              {isSelected && <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[var(--neu-base)]" />}
-                            </div>
+                  {/* ONE Single Card Container wrapping 3-column grid on all screen sizes */}
+                  <div className="rounded-lg sm:rounded-xl bg-[var(--neu-card-bg)] border border-[var(--neu-border)] p-1 sm:p-2 shadow-xs">
+                    <div className="grid grid-cols-3 gap-1 sm:gap-1.5">
+                      {PROBLEM_OPTIONS.map((opt) => {
+                        const isSelected = selectedProblemOption === opt;
+                        return (
+                          <div
+                            key={opt}
+                            onClick={() => {
+                              setSelectedProblemOption(opt);
+                              if (opt !== 'Something else (type below)') {
+                                setBriefProblem(opt);
+                              } else {
+                                setBriefProblem(customProblem);
+                              }
+                            }}
+                            className={`flex items-center justify-between px-2 py-1.5 sm:px-3 sm:py-2.5 rounded-md sm:rounded-lg transition-colors duration-150 cursor-pointer ${isSelected
+                              ? 'bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] font-semibold'
+                              : 'hover:bg-[var(--neu-base)]/40 text-[var(--neu-text)]'
+                              }`}
+                          >
+                            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                              {/* Radio Circle */}
+                              <div
+                                className={`w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border flex items-center justify-center shrink-0 transition-all ${isSelected
+                                  ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]'
+                                  : 'border-gray-400 dark:border-gray-500 bg-transparent'
+                                  }`}
+                              >
+                                {isSelected && <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[var(--neu-base)]" />}
+                              </div>
 
-                            <span className="text-[11px] sm:text-xs truncate font-medium">
-                              {opt}
-                            </span>
+                              <span className="text-[10px] sm:text-xs font-medium leading-tight">
+                                {opt}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
 
                   {/* Custom Text Input if 'Something else' is selected */}
