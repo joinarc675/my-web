@@ -53,16 +53,6 @@ const packages = [
     isLecture: true,
     icon: Mic,
   },
-  {
-    id: 'quran-life-batch-02',
-    name: 'Quran & Life Batch 02 (Course)',
-    description: 'Live interactive cohort course bridging Quranic principles with emotional resilience. Classes on Friday, Saturday & Sunday. Recorded lectures & PDF notes included.',
-    duration: 'Full Course Cohort',
-    price: 'PKR 100',
-    isPopular: false,
-    isCourse: true,
-    icon: BookOpen,
-  },
 ];
 
 export default function Packages() {

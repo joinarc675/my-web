@@ -26,7 +26,7 @@ export default function Navbar() {
   }, []);
 
   const links = [
-    { name: 'Why Counselling?', href: '#why-counseling' },
+    { name: 'Home', href: '/' },
     { name: 'Courses', href: '#courses' },
     { name: 'Packages', href: '#packages' },
     { name: 'About Me', href: '#about-me' },
@@ -35,6 +35,14 @@ export default function Navbar() {
   const handleNavLinkClick = (e, href) => {
     e.preventDefault();
     setIsOpen(false);
+    if (href === '/') {
+      if (location.pathname === '/') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        navigate('/');
+      }
+      return;
+    }
     if (location.pathname === '/') {
       const element = document.querySelector(href);
       if (element) {

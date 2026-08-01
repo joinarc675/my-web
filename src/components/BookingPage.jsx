@@ -112,6 +112,16 @@ const PACKAGES = [
   },
 ];
 
+const PROBLEM_OPTIONS = [
+  'Career Decision',
+  'Self Development',
+  'Relationship Issues',
+  'Marital Challenges',
+  'Purposeful Parenting',
+  'Spiritual Hollowness',
+  'Something else (type below)',
+];
+
 export default function BookingPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -128,6 +138,8 @@ export default function BookingPage() {
   const [city, setCity] = useState('');
   const [profession, setProfession] = useState('');
   const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [selectedProblemOption, setSelectedProblemOption] = useState('');
+  const [customProblem, setCustomProblem] = useState('');
   const [briefProblem, setBriefProblem] = useState('');
 
   // Validation and UI states
@@ -249,73 +261,70 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-20 bg-[var(--neu-base)] text-[var(--neu-text)] transition-colors duration-300">
+    <div className="min-h-screen pt-12 pb-6 sm:pt-20 sm:pb-16 bg-[var(--neu-base)] text-[var(--neu-text)] transition-colors duration-300">
       <Navbar />
-      <div className="container mx-auto px-6 md:px-12 max-w-4xl">
+      <div className="container mx-auto px-3 sm:px-6 md:px-12 max-w-3xl">
         {/* Back Button */}
         <button
           onClick={() => navigate('/')}
-          className="inline-flex items-center gap-2 mb-8 text-sm font-semibold transition-colors duration-300 text-[var(--neu-text-muted)] hover:text-[var(--neu-accent)] cursor-pointer bg-transparent border-none"
+          className="inline-flex items-center gap-1 mb-1.5 sm:mb-6 text-[11px] sm:text-xs font-semibold transition-colors duration-300 text-[var(--neu-text-muted)] hover:text-[var(--neu-accent)] cursor-pointer bg-transparent border-none"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Home
+          <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" /> Back to Home
         </button>
 
         {isSubmitted ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="max-w-xl mx-auto text-center py-16 px-8 rounded-2xl bg-[var(--neu-card-bg)] border border-[var(--neu-accent)] shadow-[0_0_30px_rgba(240,168,56,0.15)]"
+            className="max-w-xl mx-auto text-center py-8 px-4 sm:py-14 sm:px-8 rounded-xl bg-[var(--neu-card-bg)] border border-[var(--neu-accent)] shadow-[0_0_30px_rgba(240,168,56,0.15)]"
           >
-            <CheckCircle className="w-16 h-16 mx-auto mb-6 text-[var(--neu-accent)]" />
-            <h2 className="text-3xl font-bold mb-4 font-heading text-[var(--neu-text)]">
+            <CheckCircle className="w-10 h-10 sm:w-14 sm:h-14 mx-auto mb-3 sm:mb-5 text-[var(--neu-accent)]" />
+            <h2 className="text-lg sm:text-2xl font-bold mb-2 sm:mb-3 font-heading text-[var(--neu-text)]">
               Booking Request Received!
             </h2>
-            <p className="text-[var(--neu-text-muted)] leading-relaxed mb-6">
+            <p className="text-xs sm:text-sm text-[var(--neu-text-muted)] leading-relaxed mb-4 sm:mb-6">
               Thank you, <span className="font-bold text-[var(--neu-text)]">{submittedData?.fullName}</span>.
               We have received your request for <span className="font-semibold text-[var(--neu-accent)]">{submittedData?.packageName}</span>.
               Our team will reach out to you on WhatsApp (<span className="font-semibold text-[var(--neu-text)]">{submittedData?.whatsappNumber}</span>) shortly.
             </p>
             <button
               onClick={() => navigate('/')}
-              className="neu-btn px-6 py-2.5 text-sm cursor-pointer"
+              className="neu-btn px-4 py-1.5 sm:px-6 sm:py-2 text-xs sm:text-sm cursor-pointer"
             >
               Return Home
             </button>
           </motion.div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-12">
+          <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-6">
 
             {/* Header */}
-            <div className="text-center space-y-4">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--neu-text)]">
+            <div className="text-center space-y-0.5 sm:space-y-2">
+              <h1 className="text-lg sm:text-3xl md:text-4xl font-extrabold text-[var(--neu-text)]">
                 Book Your{' '}
                 <span className="font-display text-[var(--neu-accent)] tracking-wider">
                   Session
                 </span>
               </h1>
-              <p className="text-[var(--neu-text-muted)] max-w-xl mx-auto">
-                Fill in your details below to reserve your counselling session.
-              </p>
             </div>
 
             {/* Supabase Error Banner */}
             {submitError && (
-              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-[var(--neu-text)] flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-[var(--neu-accent)] flex-shrink-0 mt-0.5" />
+              <div className="p-2 sm:p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-[var(--neu-text)] flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-[var(--neu-accent)] flex-shrink-0 mt-0.5" />
                 <div>
                   <strong className="font-bold text-[var(--neu-accent)]">Submission Error:</strong>
-                  <p className="text-xs text-[var(--neu-text-muted)] mt-1">{submitError}</p>
+                  <p className="text-[10px] text-[var(--neu-text-muted)] mt-0.5">{submitError}</p>
                 </div>
               </div>
             )}
 
             {/* Error Banner */}
             {Object.keys(errors).length > 0 && (
-              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-[var(--neu-text)] flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-[var(--neu-accent)] flex-shrink-0 mt-0.5" />
+              <div className="p-2 sm:p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-[var(--neu-text)] flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-[var(--neu-accent)] flex-shrink-0 mt-0.5" />
                 <div>
-                  <strong className="font-bold text-[var(--neu-accent)]">Please correct the following errors:</strong>
-                  <ul className="list-disc pl-5 mt-1 space-y-1 text-xs text-[var(--neu-text-muted)]">
+                  <strong className="font-bold text-[var(--neu-accent)]">Please correct errors:</strong>
+                  <ul className="list-disc pl-4 mt-0.5 space-y-0.5 text-[10px] text-[var(--neu-text-muted)]">
                     {Object.values(errors).map((err, idx) => (
                       <li key={idx}>{err}</li>
                     ))}
@@ -325,16 +334,13 @@ export default function BookingPage() {
             )}
 
             {/* CLIENT DETAILS & SESSION SELECTION FORM */}
-            <div ref={formRef} className="space-y-6">
-              <div className="flex items-center gap-3 border-b border-[var(--neu-border)] pb-3">
-                <h2 className="text-xl font-bold tracking-wide">Your Details & Session</h2>
-              </div>
+            <div ref={formRef} className="space-y-2 sm:space-y-4">
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-2 gap-2 sm:gap-4">
                 {/* Name */}
-                <div className="space-y-2">
-                  <label htmlFor="fullName" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Name <span className="text-red-500">*</span>
+                <div className="col-span-1 space-y-1">
+                  <label htmlFor="fullName" className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1">
+                    <User className="w-3 h-3 text-[var(--neu-accent)]" /> Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -350,20 +356,20 @@ export default function BookingPage() {
                         });
                       }
                     }}
-                    placeholder="Enter your full name"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                    placeholder="Full name"
+                    className="w-full px-2 py-1.5 sm:px-3 sm:py-2 rounded-md sm:rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-xs sm:text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
                   />
                   {errors.fullName && (
-                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
+                    <p className="text-[10px] text-amber-500/90 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" /> {errors.fullName}
                     </p>
                   )}
                 </div>
 
                 {/* WhatsApp Number */}
-                <div className="space-y-2">
-                  <label htmlFor="whatsappNumber" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> WhatsApp Number <span className="text-red-500">*</span>
+                <div className="col-span-1 space-y-1">
+                  <label htmlFor="whatsappNumber" className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1">
+                    <Phone className="w-3 h-3 text-[var(--neu-accent)]" /> WhatsApp <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="tel"
@@ -379,20 +385,20 @@ export default function BookingPage() {
                         });
                       }
                     }}
-                    placeholder="e.g. +92 300 1234567"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                    placeholder="+92 300 1234567"
+                    className="w-full px-2 py-1.5 sm:px-3 sm:py-2 rounded-md sm:rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-xs sm:text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
                   />
                   {errors.whatsappNumber && (
-                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
+                    <p className="text-[10px] text-amber-500/90 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" /> {errors.whatsappNumber}
                     </p>
                   )}
                 </div>
 
                 {/* Email */}
-                <div className="space-y-2">
-                  <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Email
+                <div className="col-span-1 space-y-1">
+                  <label htmlFor="email" className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1">
+                    <Mail className="w-3 h-3 text-[var(--neu-accent)]" /> Email
                   </label>
                   <input
                     type="email"
@@ -408,20 +414,20 @@ export default function BookingPage() {
                         });
                       }
                     }}
-                    placeholder="e.g. yourname@example.com"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                    placeholder="email@example.com"
+                    className="w-full px-2 py-1.5 sm:px-3 sm:py-2 rounded-md sm:rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-xs sm:text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
                   />
                   {errors.email && (
-                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
+                    <p className="text-[10px] text-amber-500/90 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" /> {errors.email}
                     </p>
                   )}
                 </div>
 
                 {/* Age */}
-                <div className="space-y-2">
-                  <label htmlFor="age" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Age
+                <div className="col-span-1 space-y-1">
+                  <label htmlFor="age" className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1">
+                    <User className="w-3 h-3 text-[var(--neu-accent)]" /> Age
                   </label>
                   <input
                     type="number"
@@ -440,57 +446,60 @@ export default function BookingPage() {
                       }
                     }}
                     placeholder="e.g. 28"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                    className="w-full px-2 py-1.5 sm:px-3 sm:py-2 rounded-md sm:rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-xs sm:text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
                   />
                   {errors.age && (
-                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
+                    <p className="text-[10px] text-amber-500/90 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" /> {errors.age}
                     </p>
                   )}
                 </div>
 
                 {/* City */}
-                <div className="space-y-2">
-                  <label htmlFor="city" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> City
+                <div className="col-span-1 space-y-1">
+                  <label htmlFor="city" className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-[var(--neu-accent)]" /> City
                   </label>
                   <input
                     type="text"
                     id="city"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    placeholder="e.g. Lahore, Karachi, Islamabad"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                    placeholder="e.g. Lahore"
+                    className="w-full px-2 py-1.5 sm:px-3 sm:py-2 rounded-md sm:rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-xs sm:text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
                   />
                 </div>
 
                 {/* Profession */}
-                <div className="space-y-2">
-                  <label htmlFor="profession" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <Briefcase className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Profession
+                <div className="col-span-1 space-y-1">
+                  <label htmlFor="profession" className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1">
+                    <Briefcase className="w-3 h-3 text-[var(--neu-accent)]" /> Profession
                   </label>
                   <input
                     type="text"
                     id="profession"
                     value={profession}
                     onChange={(e) => setProfession(e.target.value)}
-                    placeholder="e.g. Software Engineer, Student, Entrepreneur"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                    placeholder="e.g. Engineer"
+                    className="w-full px-2 py-1.5 sm:px-3 sm:py-2 rounded-md sm:rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-xs sm:text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
                   />
                 </div>
 
-                {/* Select Session / Package (Compact Grid placed right before Brief Problem) */}
-                <div className="md:col-span-2 space-y-2 pt-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center justify-between">
-                    <span>Select Session / Package <span className="text-red-500">*</span></span>
+                {/* Select Session / Package (All inside ONE Single Card) */}
+                <div className="col-span-2 space-y-1">
+                  <label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <Briefcase className="w-3 h-3 text-[var(--neu-accent)]" /> Select Session / Package <span className="text-red-500">*</span>
+                    </span>
                     {errors.package && (
-                      <span className="text-xs text-amber-500 font-normal flex items-center gap-1">
+                      <span className="text-[10px] sm:text-xs text-amber-500 font-normal flex items-center gap-1">
                         <AlertCircle className="w-3 h-3" /> {errors.package}
                       </span>
                     )}
                   </label>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                  {/* ONE Single Card Container for all packages */}
+                  <div className="rounded-lg sm:rounded-xl bg-[var(--neu-card-bg)] border border-[var(--neu-border)] overflow-hidden divide-y divide-[var(--neu-border)]/40 shadow-xs">
                     {PACKAGES.map((pkg) => {
                       const isSelected = selectedPackage?.id === pkg.id;
                       return (
@@ -504,60 +513,111 @@ export default function BookingPage() {
                               return copy;
                             });
                           }}
-                          className={`p-2.5 rounded-lg border transition-all duration-200 cursor-pointer flex items-center gap-2.5 ${isSelected
-                            ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]/10 text-[var(--neu-accent)] font-bold shadow-xs'
-                            : 'border-[var(--neu-border)] hover:border-[var(--neu-accent)]/50 bg-[var(--neu-card-bg)] text-[var(--neu-text)]'
+                          className={`flex items-center justify-between px-3 py-2 sm:py-2.5 transition-colors duration-150 cursor-pointer ${isSelected
+                            ? 'bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] font-semibold'
+                            : 'hover:bg-[var(--neu-base)]/40 text-[var(--neu-text)]'
                             }`}
                         >
-                          {/* Radio Circle Button */}
-                          <div
-                            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${isSelected
-                              ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]'
-                              : 'border-gray-400 dark:border-gray-500 bg-transparent'
-                              }`}
-                          >
-                            {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-[var(--neu-base)]" />}
+                          <div className="flex items-center gap-2 min-w-0">
+                            {/* Radio Circle */}
+                            <div
+                              className={`w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border flex items-center justify-center shrink-0 transition-all ${isSelected
+                                ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]'
+                                : 'border-gray-400 dark:border-gray-500 bg-transparent'
+                                }`}
+                            >
+                              {isSelected && <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[var(--neu-base)]" />}
+                            </div>
+
+                            <span className="text-[11px] sm:text-xs truncate font-medium">
+                              {pkg.name}
+                            </span>
                           </div>
 
-                          <div className="flex-1 min-w-0">
-                            <div className="text-xs font-semibold truncate leading-tight">
-                              {pkg.name} {pkg.price ? `– ${pkg.price}` : ''}
-                            </div>
-                            {pkg.duration && (
-                              <div className="text-[10px] text-[var(--neu-text-muted)] truncate mt-0.5">
-                                {pkg.duration}
-                              </div>
-                            )}
-                          </div>
+                          {(pkg.price || pkg.duration) && (
+                            <span className={`text-[9px] sm:text-[10px] shrink-0 ml-2 ${isSelected ? 'text-[var(--neu-accent)] font-bold' : 'text-[var(--neu-text-muted)]'}`}>
+                              {pkg.price || pkg.duration}
+                            </span>
+                          )}
                         </div>
                       );
                     })}
                   </div>
                 </div>
 
-                {/* Brief Problem */}
-                <div className="md:col-span-2 space-y-2">
-                  <label htmlFor="briefProblem" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <MessageSquare className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Brief Problem
+                {/* Brief Problem / Reason for Booking (Single Card Radio List) */}
+                <div className="col-span-2 space-y-1">
+                  <label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <MessageSquare className="w-3 h-3 text-[var(--neu-accent)]" /> Brief Problem / Reason for Booking
+                    </span>
                   </label>
-                  <textarea
-                    id="briefProblem"
-                    value={briefProblem}
-                    onChange={(e) => setBriefProblem(e.target.value)}
-                    rows={4}
-                    placeholder="Briefly describe what you'd like to discuss or work through in your session…"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all resize-none placeholder:text-[var(--neu-text-faint)] leading-relaxed"
-                  />
+
+                  {/* ONE Single Card Container for Problem Options */}
+                  <div className="rounded-lg sm:rounded-xl bg-[var(--neu-card-bg)] border border-[var(--neu-border)] overflow-hidden divide-y divide-[var(--neu-border)]/40 shadow-xs">
+                    {PROBLEM_OPTIONS.map((opt) => {
+                      const isSelected = selectedProblemOption === opt;
+                      return (
+                        <div
+                          key={opt}
+                          onClick={() => {
+                            setSelectedProblemOption(opt);
+                            if (opt !== 'Something else (type below)') {
+                              setBriefProblem(opt);
+                            } else {
+                              setBriefProblem(customProblem);
+                            }
+                          }}
+                          className={`flex items-center justify-between px-3 py-2 sm:py-2.5 transition-colors duration-150 cursor-pointer ${isSelected
+                            ? 'bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] font-semibold'
+                            : 'hover:bg-[var(--neu-base)]/40 text-[var(--neu-text)]'
+                            }`}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            {/* Radio Circle */}
+                            <div
+                              className={`w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full border flex items-center justify-center shrink-0 transition-all ${isSelected
+                                ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]'
+                                : 'border-gray-400 dark:border-gray-500 bg-transparent'
+                                }`}
+                            >
+                              {isSelected && <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[var(--neu-base)]" />}
+                            </div>
+
+                            <span className="text-[11px] sm:text-xs truncate font-medium">
+                              {opt}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Custom Text Input if 'Something else' is selected */}
+                  {selectedProblemOption === 'Something else (type below)' && (
+                    <div className="pt-1">
+                      <input
+                        type="text"
+                        value={customProblem}
+                        onChange={(e) => {
+                          setCustomProblem(e.target.value);
+                          setBriefProblem(e.target.value);
+                        }}
+                        placeholder="Please type your concern or details here…"
+                        className="w-full px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-md sm:rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-xs sm:text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
             {/* Submit Section */}
-            <div className="pt-4 text-center space-y-4">
+            <div className="pt-1.5 sm:pt-3 text-center">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto px-12 py-4 rounded-xl text-base font-extrabold cursor-pointer transition-all duration-300 neu-btn-primary disabled:opacity-50 disabled:cursor-not-allowed border-none"
+                className="w-full sm:w-auto px-6 py-2.5 sm:px-10 sm:py-3 rounded-lg text-xs sm:text-sm font-extrabold cursor-pointer transition-all duration-300 neu-btn-primary disabled:opacity-50 disabled:cursor-not-allowed border-none"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Booking Request'}
               </button>
@@ -575,19 +635,19 @@ export default function BookingPage() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed bottom-0 left-0 right-0 z-40 bg-[var(--neu-card-bg)] border-t border-[var(--neu-border)] py-4 px-6 md:px-12 shadow-[0_-10px_30px_rgba(0,0,0,0.15)] flex flex-row items-center justify-between gap-4"
+            className="fixed bottom-0 left-0 right-0 z-40 bg-[var(--neu-card-bg)] border-t border-[var(--neu-border)] py-2 px-3 sm:py-4 sm:px-6 md:px-12 shadow-[0_-10px_30px_rgba(0,0,0,0.15)] flex flex-row items-center justify-between gap-2"
           >
             <div>
-              <span className="text-[10px] uppercase font-bold text-[var(--neu-accent)] tracking-wider block">Selected Package</span>
-              <strong className="text-sm md:text-base font-bold text-[var(--neu-text)]">{selectedPackage.name}</strong>
+              <span className="text-[8px] sm:text-[10px] uppercase font-bold text-[var(--neu-accent)] tracking-wider block">Selected Package</span>
+              <strong className="text-xs sm:text-sm md:text-base font-bold text-[var(--neu-text)]">{selectedPackage.name}</strong>
               {selectedPackage.duration && (
-                <span className="text-xs md:text-sm text-[var(--neu-text-muted)] ml-2">({selectedPackage.duration})</span>
+                <span className="text-[10px] sm:text-xs md:text-sm text-[var(--neu-text-muted)] ml-1.5">({selectedPackage.duration})</span>
               )}
             </div>
 
             <button
               onClick={scrollToForm}
-              className="px-5 py-2.5 rounded-lg text-xs font-bold bg-[var(--neu-accent)] hover:bg-[var(--neu-accent-hover)] text-[var(--neu-base)] transition-colors cursor-pointer shadow-md border-none"
+              className="px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold bg-[var(--neu-accent)] hover:bg-[var(--neu-accent-hover)] text-[var(--neu-base)] transition-colors cursor-pointer shadow-md border-none shrink-0"
             >
               Submit
             </button>
