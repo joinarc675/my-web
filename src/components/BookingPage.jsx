@@ -80,7 +80,7 @@ const PACKAGES = [
   },
   {
     id: 'invite-us',
-    name: 'Invite Us (Motivational Lecture)',
+    name: 'Invite Us',
     description: 'Invite Abdul Rehman Cheema to your office, university, school, or college for an empowering motivational lecture & interactive seminar.',
     duration: 'Office / Campus Event',
     isPopular: false,
@@ -95,7 +95,7 @@ const PACKAGES = [
   },
   {
     id: 'quran-life-batch-02',
-    name: 'Quran & Life Batch 02 (Course)',
+    name: 'Quran & Life Batch 02',
     description: 'Full enrollment for Quran & Life Batch 02 live cohort course by Abdul Rehman Cheema. Classes held on Friday, Saturday & Sunday.',
     duration: 'Live Cohort Course (Fri, Sat & Sun)',
     price: 'PKR 100',
@@ -113,7 +113,6 @@ const PACKAGES = [
 ];
 
 const PROBLEM_OPTIONS = [
-  'Career Decision',
   'Self Development',
   'Relationship Issues',
   'Marital Challenges',
@@ -530,16 +529,10 @@ export default function BookingPage() {
                                 {isSelected && <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[var(--neu-base)]" />}
                               </div>
 
-                              <span className="text-[10px] sm:text-xs font-medium leading-tight">
+                              <span className="text-[10px] sm:text-xs font-medium leading-tight truncate">
                                 {pkg.name}
                               </span>
                             </div>
-
-                            {(pkg.price || pkg.duration) && (
-                              <span className={`text-[8px] sm:text-[10px] shrink-0 ml-1 ${isSelected ? 'text-[var(--neu-accent)] font-bold' : 'text-[var(--neu-text-muted)]'}`}>
-                                {pkg.price || pkg.duration}
-                              </span>
-                            )}
                           </div>
                         );
                       })}
@@ -555,9 +548,9 @@ export default function BookingPage() {
                     </span>
                   </label>
 
-                  {/* ONE Single Card Container wrapping 3-column grid on all screen sizes */}
+                  {/* ONE Single Card Container wrapping 2-column grid on all screen sizes */}
                   <div className="rounded-lg sm:rounded-xl bg-[var(--neu-card-bg)] border border-[var(--neu-border)] p-1 sm:p-2 shadow-xs">
-                    <div className="grid grid-cols-3 gap-1 sm:gap-1.5">
+                    <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
                       {PROBLEM_OPTIONS.map((opt) => {
                         const isSelected = selectedProblemOption === opt;
                         return (
@@ -644,9 +637,6 @@ export default function BookingPage() {
             <div>
               <span className="text-[8px] sm:text-[10px] uppercase font-bold text-[var(--neu-accent)] tracking-wider block">Selected Package</span>
               <strong className="text-xs sm:text-sm md:text-base font-bold text-[var(--neu-text)]">{selectedPackage.name}</strong>
-              {selectedPackage.duration && (
-                <span className="text-[10px] sm:text-xs md:text-sm text-[var(--neu-text-muted)] ml-1.5">({selectedPackage.duration})</span>
-              )}
             </div>
 
             <button
