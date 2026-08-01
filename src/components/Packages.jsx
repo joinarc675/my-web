@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { Check } from 'lucide-react';
 
 const packages = [
   {
@@ -9,6 +10,13 @@ const packages = [
     price: 'PKR 10,000',
     duration: '1 Session / 60 Mins',
     isPopular: false,
+    features: [
+      'Full private 1:1 session',
+      'Safe, confidential space',
+      'Clarity on stress, anxiety, or relationship struggles',
+      'Personalized direction forward',
+      'Perfect for first-time clients',
+    ],
   },
   {
     id: '3sessions',
@@ -17,6 +25,13 @@ const packages = [
     price: 'PKR 25,000',
     duration: '3 Sessions',
     isPopular: true,
+    features: [
+      'Three full private sessions',
+      'Continuity for deeper emotional exploration',
+      'Greater clarity on complex challenges',
+      'Ideal for relationship or personal breakthroughs',
+      'Structured progress across sessions',
+    ],
   },
   {
     id: 'urgent',
@@ -25,6 +40,13 @@ const packages = [
     price: 'PKR 14,500',
     duration: '1 Session / Priority',
     isPopular: false,
+    features: [
+      'Priority booking for immediate support',
+      'Direct access when timing matters most',
+      'Fast clarity during emotional overwhelm',
+      'Ideal for betrayal discovery, heartbreak, or sudden crisis',
+      'Calm, direction, and immediate guidance',
+    ],
   },
   {
     id: '5sessions',
@@ -33,6 +55,13 @@ const packages = [
     price: 'PKR 45,000',
     duration: '5 Sessions',
     isPopular: false,
+    features: [
+      'Five structured private sessions',
+      'Deep behavioral and emotional exploration',
+      'Relationship dynamics and conflict resolution',
+      'Lasting tools for long-term well-being',
+      'Best value for ongoing support',
+    ],
   },
   {
     id: 'physical',
@@ -42,15 +71,13 @@ const packages = [
     duration: '1 In-Person Session',
     isPopular: false,
     recommended: true,
-  },
-  {
-    id: 'quran-life-batch-02',
-    name: 'Quran & Life Batch 02 (Course)',
-    description: 'Live interactive cohort course bridging Quranic principles with emotional resilience. Recorded lectures & PDF notes included.',
-    price: 'PKR 100',
-    duration: 'Full Course Cohort',
-    isPopular: false,
-    isCourse: true,
+    features: [
+      'Face-to-face private consultation',
+      'Premium in-person therapeutic space',
+      'Ideal for couples or sensitive matters',
+      'Direct, personal human connection',
+      'Available by appointment only',
+    ],
   },
   {
     id: 'invite-us',
@@ -60,6 +87,30 @@ const packages = [
     duration: 'Office / Campus Event',
     isPopular: false,
     isLecture: true,
+    features: [
+      'Available for Offices, Universities, Schools & Colleges',
+      'Tailored motivational lectures & leadership keynotes',
+      'Islamic wisdom, emotional resilience & self-growth',
+      'Live Q&A and interactive audience engagement',
+      'Customized topics based on your institution’s needs',
+    ],
+  },
+  {
+    id: 'quran-life-batch-02',
+    name: 'Quran & Life Batch 02 (Course)',
+    description: 'Live interactive cohort course bridging Quranic principles with emotional resilience. Classes on Friday, Saturday & Sunday. Recorded lectures & PDF notes included.',
+    price: 'PKR 100',
+    duration: 'Full Course Cohort',
+    isPopular: false,
+    isCourse: true,
+    features: [
+      'Classes on Friday, Saturday & Sunday',
+      'Live interactive cohort sessions',
+      'Recorded lectures provided after every class',
+      'Comprehensive PDF study notes & reading material',
+      'Direct Q&A with Abdul Rehman Cheema',
+      'Community access & continuous support',
+    ],
   },
 ];
 
@@ -119,12 +170,12 @@ export default function Packages() {
                 <h3 className="text-xl font-bold mb-2 text-[var(--neu-text)] transition-colors duration-300">
                   {pkg.name}
                 </h3>
-                <p className="text-sm h-16 leading-relaxed text-[var(--neu-text-muted)] transition-colors duration-300">
+                <p className="text-sm min-h-[4rem] leading-relaxed text-[var(--neu-text-muted)] transition-colors duration-300">
                   {pkg.description}
                 </p>
               </div>
 
-              <div className="mb-8">
+              <div className="mb-6">
                 <div className="text-3xl font-extrabold text-[var(--neu-text)] mb-1 transition-colors duration-300">
                   {pkg.price}
                 </div>
@@ -132,6 +183,20 @@ export default function Packages() {
                   {pkg.duration}
                 </div>
               </div>
+
+              {/* Features List */}
+              {pkg.features && pkg.features.length > 0 && (
+                <div className="mb-8 pt-4 border-t border-[var(--neu-border)] transition-colors duration-300 flex-1">
+                  <ul className="space-y-2.5 text-left">
+                    {pkg.features.map((feature, fIdx) => (
+                      <li key={fIdx} className="flex items-start gap-2.5 text-xs md:text-sm text-[var(--neu-text-muted)]">
+                        <Check className="w-4 h-4 text-[var(--neu-accent)] shrink-0 mt-0.5" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               <div className="mt-auto pt-6 border-t border-[var(--neu-border)] transition-colors duration-300">
                 <motion.button

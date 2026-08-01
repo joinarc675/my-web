@@ -86,22 +86,6 @@ const PACKAGES = [
     ],
   },
   {
-    id: 'quran-life-batch-02',
-    name: 'Quran & Life Batch 02 (Course)',
-    description: 'Full enrollment for Quran & Life Batch 02 live cohort course by Abdul Rehman Cheema.',
-    price: 'PKR 100',
-    duration: 'Live Cohort Course',
-    isPopular: false,
-    recommended: false,
-    features: [
-      'Live interactive cohort sessions',
-      'Recorded lectures provided after every class',
-      'Comprehensive PDF study notes & reading material',
-      'Direct Q&A with Abdul Rehman Cheema',
-      'Community access & continuous support',
-    ],
-  },
-  {
     id: 'invite-us',
     name: 'Invite Us (Motivational Lecture)',
     description: 'Invite Abdul Rehman Cheema to your office, university, school, or college for an empowering motivational lecture & interactive seminar.',
@@ -115,6 +99,23 @@ const PACKAGES = [
       'Islamic wisdom, emotional resilience & self-growth',
       'Live Q&A and interactive audience engagement',
       'Customized topics based on your institution’s needs',
+    ],
+  },
+  {
+    id: 'quran-life-batch-02',
+    name: 'Quran & Life Batch 02 (Course)',
+    description: 'Full enrollment for Quran & Life Batch 02 live cohort course by Abdul Rehman Cheema. Classes held on Friday, Saturday & Sunday.',
+    price: 'PKR 100',
+    duration: 'Live Cohort Course (Fri, Sat & Sun)',
+    isPopular: false,
+    recommended: false,
+    features: [
+      'Classes on Friday, Saturday & Sunday',
+      'Live interactive cohort sessions',
+      'Recorded lectures provided after every class',
+      'Comprehensive PDF study notes & reading material',
+      'Direct Q&A with Abdul Rehman Cheema',
+      'Community access & continuous support',
     ],
   },
 ];
@@ -136,6 +137,7 @@ export default function BookingPage() {
   // Form states
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [fullName, setFullName] = useState('');
+  const [age, setAge] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [preferredDate, setPreferredDate] = useState('');
@@ -175,6 +177,10 @@ export default function BookingPage() {
 
     if (!fullName.trim()) {
       newErrors.fullName = 'Full Name is required.';
+    }
+
+    if (age && (isNaN(age) || parseInt(age, 10) <= 0 || parseInt(age, 10) > 120)) {
+      newErrors.age = 'Please enter a valid age.';
     }
 
     if (!email.trim() && !phone.trim()) {
@@ -229,6 +235,7 @@ export default function BookingPage() {
         package_name: selectedPackage.name,
         price: selectedPackage.price,
         full_name: fullName,
+        age: age ? parseInt(age, 10) : null,
         email: email || null,
         phone: phone || null,
         preferred_date: preferredDate,
@@ -364,108 +371,82 @@ export default function BookingPage() {
             <div className="space-y-6">
               <div className="flex items-center gap-3 border-b border-[var(--neu-border)] pb-3">
                 <span className="flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs bg-[var(--neu-accent)] text-[var(--neu-base)]">1</span>
-                <h2 className="text-xl font-bold tracking-wide">Select Your Counselling Package</h2>
+                <h2 className="text-xl font-bold tracking-wide">Select Session <span className="text-red-500">*</span></h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {PACKAGES.map((pkg, idx) => {
+              <div className="space-y-3 max-w-3xl">
+                {PACKAGES.map((pkg) => {
                   const isSelected = selectedPackage?.id === pkg.id;
                   return (
-                    <motion.div
+                    <div
                       key={pkg.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: idx * 0.07 }}
-                      className={`relative flex flex-col rounded-2xl border transition-all duration-300 overflow-hidden ${isSelected
-                        ? 'border-[var(--neu-accent)] shadow-[0_0_28px_rgba(240,168,56,0.22)] scale-[1.02]'
-                        : 'border-[var(--neu-border)] hover:border-[var(--neu-accent)]/60'
-                        } bg-[var(--neu-card-bg)]`}
+                      onClick={() => {
+                        setSelectedPackage(pkg);
+                        setErrors(prev => {
+                          const copy = { ...prev };
+                          delete copy.package;
+                          return copy;
+                        });
+                      }}
+                      className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer ${isSelected
+                        ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]/10 shadow-sm'
+                        : 'border-[var(--neu-border)] hover:border-[var(--neu-accent)]/50 bg-[var(--neu-card-bg)]'
+                        }`}
                     >
-                      {/* Badge row */}
-                      {(pkg.isPopular || pkg.recommended) && (
-                        <div className="px-5 pt-4">
-                          <span className="inline-block text-[0.6rem] font-black tracking-widest uppercase px-2.5 py-1 rounded-full bg-[var(--neu-accent)] text-[var(--neu-base)]">
-                            {pkg.isPopular ? '⭐ Most Popular' : '✦ Recommended By ARC'}
-                          </span>
+                      <div className="flex items-center gap-3.5">
+                        {/* Radio Circle Button */}
+                        <div
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${isSelected
+                            ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]'
+                            : 'border-gray-400 dark:border-gray-500 bg-transparent'
+                            }`}
+                        >
+                          {isSelected && <div className="w-2 h-2 rounded-full bg-[var(--neu-base)]" />}
                         </div>
-                      )}
 
-                      {/* Card body */}
-                      <div className="flex flex-col flex-1 p-5 pt-4 space-y-3">
+                        {/* Session Name & Price */}
+                        <div className="flex-1 flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`text-base font-semibold ${isSelected ? 'text-[var(--neu-accent)] font-bold' : 'text-[var(--neu-text)]'}`}>
+                              {pkg.name} – {pkg.price}
+                            </span>
+                            {pkg.isPopular && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--neu-accent)] text-[var(--neu-base)]">
+                                Most Popular
+                              </span>
+                            )}
+                            {pkg.recommended && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--neu-accent)] text-[var(--neu-base)]">
+                                Recommended
+                              </span>
+                            )}
+                          </div>
 
-                        {/* Name */}
-                        <h3 className="text-lg font-bold text-[var(--neu-accent)] leading-tight">
-                          {pkg.name}
-                        </h3>
-
-                        {/* Price row */}
-                        <div className="flex items-baseline gap-2 flex-wrap">
-                          <span className="text-3xl font-extrabold text-[var(--neu-text)] tracking-tight">
-                            {pkg.price}
-                          </span>
-                          {pkg.originalPrice && (
-                            <span className="text-xs line-through text-[var(--neu-text-faint)]">
-                              {pkg.originalPrice}
+                          {pkg.duration && (
+                            <span className="text-xs text-[var(--neu-text-muted)] font-medium">
+                              ({pkg.duration})
                             </span>
                           )}
                         </div>
-
-                        {/* Duration chip */}
-                        <span className="text-[11px] text-[var(--neu-text-muted)] font-medium">
-                          {pkg.duration}
-                        </span>
-
-                        {/* Save badge */}
-                        {pkg.originalPrice && (() => {
-                          const orig = parseInt(pkg.originalPrice.replace(/[^0-9]/g, ''), 10);
-                          const curr = parseInt(pkg.price.replace(/[^0-9]/g, ''), 10);
-                          const saved = orig - curr;
-                          return (
-                            <span className="w-max text-[10px] font-bold px-2.5 py-1 rounded-full bg-[var(--neu-accent)]/15 text-[var(--neu-accent)] border border-[var(--neu-accent)]/30">
-                              Save PKR {saved.toLocaleString()}
-                            </span>
-                          );
-                        })()}
-
-                        {/* Description */}
-                        <p className="text-xs text-[var(--neu-text-muted)] leading-relaxed">
-                          {pkg.description}
-                        </p>
-
-                        {/* Divider */}
-                        <div className="border-t border-[var(--neu-border)] pt-3">
-                          {/* Feature list */}
-                          <ul className="space-y-2">
-                            {pkg.features.map((f) => (
-                              <li key={f} className="flex items-start gap-2 text-xs text-[var(--neu-text-muted)]">
-                                <span className="mt-0.5 text-[var(--neu-accent)] flex-shrink-0">✓</span>
-                                <span>{f}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        {/* Select Button */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedPackage(pkg);
-                            setErrors(prev => {
-                              const copy = { ...prev };
-                              delete copy.package;
-                              return copy;
-                            });
-                            setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
-                          }}
-                          className={`mt-auto w-full py-3 rounded-xl text-sm font-bold transition-all duration-300 border cursor-pointer ${isSelected
-                            ? 'bg-[var(--neu-accent)] text-[var(--neu-base)] border-[var(--neu-accent)] shadow-md'
-                            : 'bg-transparent text-[var(--neu-text)] border-[var(--neu-border)] hover:border-[var(--neu-accent)] hover:text-[var(--neu-accent)]'
-                            }`}
-                        >
-                          {isSelected ? '✓ Selected' : 'Select Package'}
-                        </button>
                       </div>
-                    </motion.div>
+
+                      {/* Selected package features / details */}
+                      {isSelected && (
+                        <div className="mt-3.5 pl-8 pt-3 border-t border-[var(--neu-border)]/60 space-y-2">
+                          <p className="text-xs text-[var(--neu-text-muted)] leading-relaxed">{pkg.description}</p>
+                          {pkg.features && (
+                            <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
+                              {pkg.features.map((f, fIdx) => (
+                                <li key={fIdx} className="flex items-center gap-2 text-xs text-[var(--neu-text-muted)]">
+                                  <span className="text-[var(--neu-accent)] font-bold flex-shrink-0">✓</span>
+                                  <span>{f}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
@@ -510,6 +491,37 @@ export default function BookingPage() {
                   {errors.fullName && (
                     <p className="text-xs text-amber-500/90 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" /> {errors.fullName}
+                    </p>
+                  )}
+                </div>
+
+                {/* Age */}
+                <div className="space-y-2">
+                  <label htmlFor="age" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Age
+                  </label>
+                  <input
+                    type="number"
+                    id="age"
+                    min="1"
+                    max="120"
+                    value={age}
+                    onChange={(e) => {
+                      setAge(e.target.value);
+                      if (errors.age) {
+                        setErrors(prev => {
+                          const copy = { ...prev };
+                          delete copy.age;
+                          return copy;
+                        });
+                      }
+                    }}
+                    placeholder="e.g. 25"
+                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-border-solid)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                  />
+                  {errors.age && (
+                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" /> {errors.age}
                     </p>
                   )}
                 </div>

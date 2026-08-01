@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import coursePoster from '../assets/course-poster.webp';
-import { Sparkles, Clock, BookOpen, MessageCircle, Star, X, CheckCircle2, Video, FileText, ArrowRight } from 'lucide-react';
+import { Sparkles, Clock, BookOpen, MessageCircle, Star, X, CheckCircle2, Video, FileText, ArrowRight, Calendar } from 'lucide-react';
 
 const BATCH_1_REVIEWS = [
   {
@@ -124,6 +124,10 @@ export default function Courses() {
 
                 {/* Highlights List */}
                 <div className="space-y-2 pt-1 text-xs md:text-sm font-semibold text-[var(--neu-text)]">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-[var(--neu-accent)] flex-shrink-0" />
+                    <span>Classes on <strong>Friday, Saturday &amp; Sunday</strong></span>
+                  </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[var(--neu-accent)] flex-shrink-0" />
                     <span>Live Interactive Cohort Sessions</span>
