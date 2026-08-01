@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, User, Mail, Phone, CheckCircle, ArrowLeft, AlertCircle } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Briefcase, MessageSquare, CheckCircle, ArrowLeft, AlertCircle } from 'lucide-react';
 import Navbar from './Navbar';
 import { supabase } from '../lib/supabaseClient';
 import { trackLead } from '../lib/pixel';
@@ -11,7 +11,6 @@ const PACKAGES = [
     id: '60min',
     name: '60 Minute Session',
     description: 'A safe first conversation to explore what you are carrying and whether we are the right fit.',
-    price: 'PKR 10,000',
     duration: '60 Minutes',
     isPopular: false,
     features: [
@@ -26,8 +25,6 @@ const PACKAGES = [
     id: '3sessions',
     name: '3 Sessions Package',
     description: 'More time to go deeper when you are navigating complex emotions or need space to untangle something heavy.',
-    price: 'PKR 25,000',
-    originalPrice: 'PKR 30,000',
     duration: '3 Sessions',
     isPopular: true,
     features: [
@@ -42,7 +39,6 @@ const PACKAGES = [
     id: 'urgent',
     name: 'Urgent Session',
     description: 'For those moments when you cannot wait and need someone who understands.',
-    price: 'PKR 14,500',
     duration: 'Priority Access · 60 Minutes',
     isPopular: false,
     features: [
@@ -57,8 +53,6 @@ const PACKAGES = [
     id: '5sessions',
     name: '5 Sessions Package',
     description: 'Comprehensive therapy plan exploring core behaviors, relationship dynamics, and lasting solutions.',
-    price: 'PKR 45,000',
-    originalPrice: 'PKR 50,000',
     duration: '5 Sessions',
     isPopular: false,
     features: [
@@ -73,7 +67,6 @@ const PACKAGES = [
     id: 'physical',
     name: 'Physical Meeting',
     description: 'In-person premium consultation providing a safe, direct, and collaborative healing environment.',
-    price: 'PKR 25,000',
     duration: '1 In-Person Session',
     isPopular: false,
     recommended: true,
@@ -89,7 +82,6 @@ const PACKAGES = [
     id: 'invite-us',
     name: 'Invite Us (Motivational Lecture)',
     description: 'Invite Abdul Rehman Cheema to your office, university, school, or college for an empowering motivational lecture & interactive seminar.',
-    price: 'PKR 125,000',
     duration: 'Office / Campus Event',
     isPopular: false,
     recommended: false,
@@ -105,8 +97,8 @@ const PACKAGES = [
     id: 'quran-life-batch-02',
     name: 'Quran & Life Batch 02 (Course)',
     description: 'Full enrollment for Quran & Life Batch 02 live cohort course by Abdul Rehman Cheema. Classes held on Friday, Saturday & Sunday.',
-    price: 'PKR 100',
     duration: 'Live Cohort Course (Fri, Sat & Sun)',
+    price: 'PKR 100',
     isPopular: false,
     recommended: false,
     features: [
@@ -120,12 +112,6 @@ const PACKAGES = [
   },
 ];
 
-const TIME_SLOTS = [
-  { id: 'morning', label: 'Morning', time: '9:00 AM - 12:00 PM' },
-  { id: 'afternoon', label: 'Afternoon', time: '12:00 PM - 5:00 PM' },
-  { id: 'evening', label: 'Evening', time: '5:00 PM - 9:00 PM' },
-];
-
 export default function BookingPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -137,12 +123,12 @@ export default function BookingPage() {
   // Form states
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [fullName, setFullName] = useState('');
-  const [age, setAge] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [preferredDate, setPreferredDate] = useState('');
-  const [preferredTimeSlot, setPreferredTimeSlot] = useState('');
-  const [matter, setMatter] = useState('');
+  const [age, setAge] = useState('');
+  const [city, setCity] = useState('');
+  const [profession, setProfession] = useState('');
+  const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [briefProblem, setBriefProblem] = useState('');
 
   // Validation and UI states
   const [errors, setErrors] = useState({});
@@ -172,41 +158,25 @@ export default function BookingPage() {
     const newErrors = {};
 
     if (!selectedPackage) {
-      newErrors.package = 'Please select a package first.';
+      newErrors.package = 'Please select a session / package first.';
     }
 
     if (!fullName.trim()) {
-      newErrors.fullName = 'Full Name is required.';
+      newErrors.fullName = 'Name is required.';
+    }
+
+    if (!whatsappNumber.trim()) {
+      newErrors.whatsappNumber = 'WhatsApp number is required.';
+    } else if (!/^\+?[0-9\s-]{7,15}$/.test(whatsappNumber.trim())) {
+      newErrors.whatsappNumber = 'Please enter a valid WhatsApp number.';
+    }
+
+    if (email.trim() && !/\S+@\S+\.\S+/.test(email.trim())) {
+      newErrors.email = 'Please enter a valid email address.';
     }
 
     if (age && (isNaN(age) || parseInt(age, 10) <= 0 || parseInt(age, 10) > 120)) {
       newErrors.age = 'Please enter a valid age.';
-    }
-
-    if (!email.trim() && !phone.trim()) {
-      newErrors.contact = 'Either Email or Phone must be provided.';
-    } else {
-      if (email.trim() && !/\S+@\S+\.\S+/.test(email)) {
-        newErrors.email = 'Please enter a valid email address.';
-      }
-      if (phone.trim() && !/^\+?[0-9\s-]{7,15}$/.test(phone)) {
-        newErrors.phone = 'Please enter a valid phone number.';
-      }
-    }
-
-    if (!preferredDate) {
-      newErrors.preferredDate = 'Please select a preferred date.';
-    } else {
-      const selectedDate = new Date(preferredDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (selectedDate < today) {
-        newErrors.preferredDate = 'Date cannot be in the past.';
-      }
-    }
-
-    if (!preferredTimeSlot) {
-      newErrors.preferredTimeSlot = 'Please select a preferred time slot.';
     }
 
     setErrors(newErrors);
@@ -217,11 +187,7 @@ export default function BookingPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      // Scroll to first error
-      const firstError = Object.keys(errors)[0];
-      if (firstError) {
-        scrollToForm();
-      }
+      scrollToForm();
       return;
     }
 
@@ -229,22 +195,20 @@ export default function BookingPage() {
     setSubmitError('');
 
     try {
-      // 1. Prepare the payload for bookings insert
+      // Prepare payload with exact required columns (no price in payload for DB)
       const bookingPayload = {
         package_id: selectedPackage.id,
         package_name: selectedPackage.name,
-        price: selectedPackage.price,
-        full_name: fullName,
+        name: fullName.trim(),
+        email: email.trim() || null,
         age: age ? parseInt(age, 10) : null,
-        email: email || null,
-        phone: phone || null,
-        preferred_date: preferredDate,
-        preferred_time_slot: preferredTimeSlot,
-        matter: matter || null,
-        receipt_path: null
+        city: city.trim() || null,
+        profession: profession.trim() || null,
+        whatsapp_number: whatsappNumber.trim(),
+        brief_problem: briefProblem.trim() || null,
       };
 
-      // 2. Insert into public.bookings (no .select() — anon has INSERT-only privilege)
+      // Insert into public.bookings
       const { error: insertError } = await supabase
         .from('bookings')
         .insert([bookingPayload]);
@@ -253,7 +217,6 @@ export default function BookingPage() {
         throw new Error(`Booking submission failed: ${insertError.message}`);
       }
 
-      // LOG THE PAYLOAD TO CONSOLE
       console.log('--- ARC BOOKING SUBMISSION PAYLOAD ---');
       console.log(JSON.stringify(bookingPayload, null, 2));
       console.log('--------------------------------------');
@@ -262,23 +225,17 @@ export default function BookingPage() {
       if (typeof window !== 'undefined' && window.fbq) {
         window.fbq('track', 'Lead', {
           content_name: selectedPackage.name,
-          value: selectedPackage.price,
-          currency: 'PKR'
         });
       } else {
         trackLead({
           content_name: selectedPackage.name,
-          value: selectedPackage.price,
-          currency: 'PKR'
         });
       }
 
-      // Build display data from local form state (no server row read-back)
       setSubmittedData({
         packageName: selectedPackage.name,
-        fullName,
-        preferredDate,
-        preferredTimeSlot,
+        fullName: fullName.trim(),
+        whatsappNumber: whatsappNumber.trim(),
       });
       setIsSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -294,7 +251,7 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen pt-24 pb-20 bg-[var(--neu-base)] text-[var(--neu-text)] transition-colors duration-300">
       <Navbar />
-      <div className="container mx-auto px-6 md:px-12 max-w-5xl">
+      <div className="container mx-auto px-6 md:px-12 max-w-4xl">
         {/* Back Button */}
         <button
           onClick={() => navigate('/')}
@@ -315,8 +272,8 @@ export default function BookingPage() {
             </h2>
             <p className="text-[var(--neu-text-muted)] leading-relaxed mb-6">
               Thank you, <span className="font-bold text-[var(--neu-text)]">{submittedData?.fullName}</span>.
-              We have logged your request for the <span className="font-semibold text-[var(--neu-accent)]">{submittedData?.packageName}</span>.
-              We'll review your preferred slot ({submittedData?.preferredDate} - {submittedData?.preferredTimeSlot}) and get in touch with you shortly to confirm your booking.
+              We have received your request for <span className="font-semibold text-[var(--neu-accent)]">{submittedData?.packageName}</span>.
+              Our team will reach out to you on WhatsApp (<span className="font-semibold text-[var(--neu-text)]">{submittedData?.whatsappNumber}</span>) shortly.
             </p>
             <button
               onClick={() => navigate('/')}
@@ -330,14 +287,14 @@ export default function BookingPage() {
 
             {/* Header */}
             <div className="text-center space-y-4">
-              <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--neu-text)]">
+              <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--neu-text)]">
                 Book Your{' '}
                 <span className="font-display text-[var(--neu-accent)] tracking-wider">
                   Session
                 </span>
               </h1>
               <p className="text-[var(--neu-text-muted)] max-w-xl mx-auto">
-                Follow our <span className="text-[var(--neu-accent)] font-bold">simple two-step process</span> to reserve your counselling slot.
+                Fill in your details below to reserve your counselling session.
               </p>
             </div>
 
@@ -367,109 +324,17 @@ export default function BookingPage() {
               </div>
             )}
 
-            {/* STEP 1: PACKAGE SELECTION */}
-            <div className="space-y-6">
+            {/* CLIENT DETAILS & SESSION SELECTION FORM */}
+            <div ref={formRef} className="space-y-6">
               <div className="flex items-center gap-3 border-b border-[var(--neu-border)] pb-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs bg-[var(--neu-accent)] text-[var(--neu-base)]">1</span>
-                <h2 className="text-xl font-bold tracking-wide">Select Session <span className="text-red-500">*</span></h2>
-              </div>
-
-              <div className="space-y-3 max-w-3xl">
-                {PACKAGES.map((pkg) => {
-                  const isSelected = selectedPackage?.id === pkg.id;
-                  return (
-                    <div
-                      key={pkg.id}
-                      onClick={() => {
-                        setSelectedPackage(pkg);
-                        setErrors(prev => {
-                          const copy = { ...prev };
-                          delete copy.package;
-                          return copy;
-                        });
-                      }}
-                      className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer ${isSelected
-                        ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]/10 shadow-sm'
-                        : 'border-[var(--neu-border)] hover:border-[var(--neu-accent)]/50 bg-[var(--neu-card-bg)]'
-                        }`}
-                    >
-                      <div className="flex items-center gap-3.5">
-                        {/* Radio Circle Button */}
-                        <div
-                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${isSelected
-                            ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]'
-                            : 'border-gray-400 dark:border-gray-500 bg-transparent'
-                            }`}
-                        >
-                          {isSelected && <div className="w-2 h-2 rounded-full bg-[var(--neu-base)]" />}
-                        </div>
-
-                        {/* Session Name & Price */}
-                        <div className="flex-1 flex flex-wrap items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className={`text-base font-semibold ${isSelected ? 'text-[var(--neu-accent)] font-bold' : 'text-[var(--neu-text)]'}`}>
-                              {pkg.name} – {pkg.price}
-                            </span>
-                            {pkg.isPopular && (
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--neu-accent)] text-[var(--neu-base)]">
-                                Most Popular
-                              </span>
-                            )}
-                            {pkg.recommended && (
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--neu-accent)] text-[var(--neu-base)]">
-                                Recommended
-                              </span>
-                            )}
-                          </div>
-
-                          {pkg.duration && (
-                            <span className="text-xs text-[var(--neu-text-muted)] font-medium">
-                              ({pkg.duration})
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Selected package features / details */}
-                      {isSelected && (
-                        <div className="mt-3.5 pl-8 pt-3 border-t border-[var(--neu-border)]/60 space-y-2">
-                          <p className="text-xs text-[var(--neu-text-muted)] leading-relaxed">{pkg.description}</p>
-                          {pkg.features && (
-                            <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
-                              {pkg.features.map((f, fIdx) => (
-                                <li key={fIdx} className="flex items-center gap-2 text-xs text-[var(--neu-text-muted)]">
-                                  <span className="text-[var(--neu-accent)] font-bold flex-shrink-0">✓</span>
-                                  <span>{f}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {errors.package && (
-                <p className="text-xs text-amber-500/90 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> {errors.package}
-                </p>
-              )}
-            </div>
-
-            {/* STEP 2: CLIENT DETAILS */}
-            <div ref={formRef} className="space-y-6 pt-6">
-              <div className="flex items-center gap-3 border-b border-[var(--neu-border)] pb-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full font-bold text-xs bg-[var(--neu-accent)] text-[var(--neu-base)]">2</span>
-                <h2 className="text-xl font-bold tracking-wide">Your Details & Preferences</h2>
+                <h2 className="text-xl font-bold tracking-wide">Your Details & Session</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Full Name */}
+                {/* Name */}
                 <div className="space-y-2">
                   <label htmlFor="fullName" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Full Name <span className="text-[var(--neu-accent)]">*</span>
+                    <User className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -485,12 +350,70 @@ export default function BookingPage() {
                         });
                       }
                     }}
-                    placeholder="e.g. Haris Mahar"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-border-solid)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                    placeholder="Enter your full name"
+                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
                   />
                   {errors.fullName && (
                     <p className="text-xs text-amber-500/90 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" /> {errors.fullName}
+                    </p>
+                  )}
+                </div>
+
+                {/* WhatsApp Number */}
+                <div className="space-y-2">
+                  <label htmlFor="whatsappNumber" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> WhatsApp Number <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    id="whatsappNumber"
+                    value={whatsappNumber}
+                    onChange={(e) => {
+                      setWhatsappNumber(e.target.value);
+                      if (e.target.value.trim()) {
+                        setErrors(prev => {
+                          const copy = { ...prev };
+                          delete copy.whatsappNumber;
+                          return copy;
+                        });
+                      }
+                    }}
+                    placeholder="e.g. +92 300 1234567"
+                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                  />
+                  {errors.whatsappNumber && (
+                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" /> {errors.whatsappNumber}
+                    </p>
+                  )}
+                </div>
+
+                {/* Email */}
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) {
+                        setErrors(prev => {
+                          const copy = { ...prev };
+                          delete copy.email;
+                          return copy;
+                        });
+                      }
+                    }}
+                    placeholder="e.g. yourname@example.com"
+                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                  />
+                  {errors.email && (
+                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" /> {errors.email}
                     </p>
                   )}
                 </div>
@@ -516,8 +439,8 @@ export default function BookingPage() {
                         });
                       }
                     }}
-                    placeholder="e.g. 25"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-border-solid)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                    placeholder="e.g. 28"
+                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
                   />
                   {errors.age && (
                     <p className="text-xs text-amber-500/90 flex items-center gap-1">
@@ -526,181 +449,118 @@ export default function BookingPage() {
                   )}
                 </div>
 
-                {/* Preferred Date */}
+                {/* City */}
                 <div className="space-y-2">
-                  <label htmlFor="preferredDate" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Preferred Date <span className="text-[var(--neu-accent)]">*</span>
+                  <label htmlFor="city" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> City
                   </label>
                   <input
-                    type="date"
-                    id="preferredDate"
-                    value={preferredDate}
-                    onChange={(e) => {
-                      setPreferredDate(e.target.value);
-                      if (e.target.value) {
-                        setErrors(prev => {
-                          const copy = { ...prev };
-                          delete copy.preferredDate;
-                          return copy;
-                        });
-                      }
-                    }}
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-border-solid)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                    type="text"
+                    id="city"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="e.g. Lahore, Karachi, Islamabad"
+                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
                   />
-                  {errors.preferredDate && (
-                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" /> {errors.preferredDate}
-                    </p>
-                  )}
                 </div>
 
-                {/* Email Address */}
+                {/* Profession */}
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Email Address
+                  <label htmlFor="profession" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
+                    <Briefcase className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Profession
                   </label>
                   <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (e.target.value || phone) {
-                        setErrors(prev => {
-                          const copy = { ...prev };
-                          delete copy.contact;
-                          delete copy.email;
-                          return copy;
-                        });
-                      }
-                    }}
-                    placeholder="e.g. haris@example.com"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-border-solid)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
+                    type="text"
+                    id="profession"
+                    value={profession}
+                    onChange={(e) => setProfession(e.target.value)}
+                    placeholder="e.g. Software Engineer, Student, Entrepreneur"
+                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
                   />
-                  {errors.email && (
-                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" /> {errors.email}
-                    </p>
-                  )}
                 </div>
 
-                {/* Phone Number */}
-                <div className="space-y-2">
-                  <label htmlFor="phone" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Phone Number
+                {/* Select Session / Package (Compact Grid placed right before Brief Problem) */}
+                <div className="md:col-span-2 space-y-2 pt-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center justify-between">
+                    <span>Select Session / Package <span className="text-red-500">*</span></span>
+                    {errors.package && (
+                      <span className="text-xs text-amber-500 font-normal flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" /> {errors.package}
+                      </span>
+                    )}
                   </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    value={phone}
-                    onChange={(e) => {
-                      setPhone(e.target.value);
-                      if (e.target.value || email) {
-                        setErrors(prev => {
-                          const copy = { ...prev };
-                          delete copy.contact;
-                          delete copy.phone;
-                          return copy;
-                        });
-                      }
-                    }}
-                    placeholder="e.g. +92 300 1234567"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-border-solid)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all"
-                  />
-                  {errors.phone && (
-                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" /> {errors.phone}
-                    </p>
-                  )}
-                </div>
 
-                {/* Contact helper message */}
-                <div className="md:col-span-2">
-                  {errors.contact && (
-                    <p className="text-xs text-amber-500/90 flex items-center gap-1 bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
-                      <AlertCircle className="w-4 h-4 flex-shrink-0 text-[var(--neu-accent)]" /> {errors.contact}
-                    </p>
-                  )}
-                  {!errors.contact && (
-                    <p className="text-[10px] text-[var(--neu-text-faint)] mt-1">
-                      Note: You must provide at least one contact method (Email or Phone) so we can send details.
-                    </p>
-                  )}
-                </div>
-
-                {/* Briefly Explain Your Matter */}
-                <div className="md:col-span-2 space-y-2">
-                  <label htmlFor="matter" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <span className="text-[var(--neu-accent)] text-sm">✦</span> Briefly Explain Your Matter
-                  </label>
-                  <textarea
-                    id="matter"
-                    value={matter}
-                    onChange={(e) => setMatter(e.target.value)}
-                    rows={4}
-                    placeholder="Briefly describe what you'd like to discuss or work through in your session…"
-                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-border-solid)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all resize-none placeholder:text-[var(--neu-text-faint)] leading-relaxed"
-                  />
-                  <p className="text-[10px] text-[var(--neu-text-faint)]">
-                    Optional — everything you share is strictly confidential.
-                  </p>
-                </div>
-
-                {/* Time Slots */}
-                <div className="md:col-span-2 space-y-3">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Preferred Time Slot <span className="text-[var(--neu-accent)]">*</span>
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {TIME_SLOTS.map((slot) => {
-                      const isSelected = preferredTimeSlot === slot.id;
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                    {PACKAGES.map((pkg) => {
+                      const isSelected = selectedPackage?.id === pkg.id;
                       return (
-                        <button
-                          key={slot.id}
-                          type="button"
+                        <div
+                          key={pkg.id}
                           onClick={() => {
-                            setPreferredTimeSlot(slot.id);
+                            setSelectedPackage(pkg);
                             setErrors(prev => {
                               const copy = { ...prev };
-                              delete copy.preferredTimeSlot;
+                              delete copy.package;
                               return copy;
                             });
                           }}
-                          className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all cursor-pointer ${isSelected
-                            ? 'bg-[var(--neu-accent)] border-[var(--neu-accent)] text-[var(--neu-base)] shadow-[0_4px_12px_rgba(184,121,31,0.2)]'
-                            : 'bg-[var(--neu-card-bg)] border-[var(--neu-border)] text-[var(--neu-text)] hover:border-[var(--neu-accent)]'
+                          className={`p-2.5 rounded-lg border transition-all duration-200 cursor-pointer flex items-center gap-2.5 ${isSelected
+                            ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]/10 text-[var(--neu-accent)] font-bold shadow-xs'
+                            : 'border-[var(--neu-border)] hover:border-[var(--neu-accent)]/50 bg-[var(--neu-card-bg)] text-[var(--neu-text)]'
                             }`}
                         >
-                          <span className="text-sm font-bold">{slot.label}</span>
-                          <span className={`text-[10px] mt-1 ${isSelected ? 'text-[var(--neu-base)] opacity-80' : 'text-[var(--neu-text-muted)]'}`}>
-                            {slot.time}
-                          </span>
-                        </button>
+                          {/* Radio Circle Button */}
+                          <div
+                            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200 ${isSelected
+                              ? 'border-[var(--neu-accent)] bg-[var(--neu-accent)]'
+                              : 'border-gray-400 dark:border-gray-500 bg-transparent'
+                              }`}
+                          >
+                            {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-[var(--neu-base)]" />}
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs font-semibold truncate leading-tight">
+                              {pkg.name} {pkg.price ? `– ${pkg.price}` : ''}
+                            </div>
+                            {pkg.duration && (
+                              <div className="text-[10px] text-[var(--neu-text-muted)] truncate mt-0.5">
+                                {pkg.duration}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       );
                     })}
                   </div>
-                  {errors.preferredTimeSlot && (
-                    <p className="text-xs text-amber-500/90 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" /> {errors.preferredTimeSlot}
-                    </p>
-                  )}
+                </div>
+
+                {/* Brief Problem */}
+                <div className="md:col-span-2 space-y-2">
+                  <label htmlFor="briefProblem" className="text-xs font-bold uppercase tracking-wider text-[var(--neu-text-muted)] flex items-center gap-1.5">
+                    <MessageSquare className="w-3.5 h-3.5 text-[var(--neu-accent)]" /> Brief Problem
+                  </label>
+                  <textarea
+                    id="briefProblem"
+                    value={briefProblem}
+                    onChange={(e) => setBriefProblem(e.target.value)}
+                    rows={4}
+                    placeholder="Briefly describe what you'd like to discuss or work through in your session…"
+                    className="w-full px-4 py-3 rounded-lg bg-[var(--neu-card-bg)] border border-[var(--neu-border)] text-sm text-[var(--neu-text)] focus:outline-none focus:border-[var(--neu-accent)] focus:ring-1 focus:ring-[var(--neu-accent)] transition-all resize-none placeholder:text-[var(--neu-text-faint)] leading-relaxed"
+                  />
                 </div>
               </div>
             </div>
 
             {/* Submit Section */}
-            <div className="pt-6 text-center space-y-4">
+            <div className="pt-4 text-center space-y-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className="w-full sm:w-auto px-12 py-4 rounded-xl text-base font-extrabold cursor-pointer transition-all duration-300 neu-btn-primary disabled:opacity-50 disabled:cursor-not-allowed border-none"
               >
-                {isSubmitting ? 'Submitting...' : 'Confirm Booking Request'}
+                {isSubmitting ? 'Submitting...' : 'Submit Booking Request'}
               </button>
-
-              <p className="text-[10px] text-[var(--neu-text-faint)] max-w-sm mx-auto leading-normal">
-                By completing booking, you agree to our 24-hour cancellation policy.
-              </p>
             </div>
 
           </form>
@@ -720,7 +580,9 @@ export default function BookingPage() {
             <div>
               <span className="text-[10px] uppercase font-bold text-[var(--neu-accent)] tracking-wider block">Selected Package</span>
               <strong className="text-sm md:text-base font-bold text-[var(--neu-text)]">{selectedPackage.name}</strong>
-              <span className="text-xs md:text-sm text-[var(--neu-text-muted)] ml-2">( {selectedPackage.price} )</span>
+              {selectedPackage.duration && (
+                <span className="text-xs md:text-sm text-[var(--neu-text-muted)] ml-2">({selectedPackage.duration})</span>
+              )}
             </div>
 
             <button

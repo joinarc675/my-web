@@ -7,7 +7,6 @@ const packages = [
     id: '60min',
     name: '60 Minute Session',
     description: 'A focused, one-on-one session to address immediate concerns and find actionable coping strategies.',
-    price: 'PKR 10,000',
     duration: '1 Session / 60 Mins',
     isPopular: false,
     features: [
@@ -22,7 +21,6 @@ const packages = [
     id: '3sessions',
     name: '3 Sessions Package',
     description: 'Deep-dive counselling to unpack emotional blocks, establish therapeutic goals, and build resilience.',
-    price: 'PKR 25,000',
     duration: '3 Sessions',
     isPopular: true,
     features: [
@@ -37,7 +35,6 @@ const packages = [
     id: 'urgent',
     name: 'Urgent Session',
     description: 'Priority booking within 24 hours for acute distress, critical life events, or sudden relationship issues.',
-    price: 'PKR 14,500',
     duration: '1 Session / Priority',
     isPopular: false,
     features: [
@@ -52,7 +49,6 @@ const packages = [
     id: '5sessions',
     name: '5 Sessions Package',
     description: 'Comprehensive therapy plan exploring core behaviors, relationship dynamics, and lasting solutions.',
-    price: 'PKR 45,000',
     duration: '5 Sessions',
     isPopular: false,
     features: [
@@ -67,7 +63,6 @@ const packages = [
     id: 'physical',
     name: 'Physical Meeting',
     description: 'In-person premium consultation at our office, providing a safe, direct, and collaborative healing environment.',
-    price: 'PKR 25,000',
     duration: '1 In-Person Session',
     isPopular: false,
     recommended: true,
@@ -83,7 +78,6 @@ const packages = [
     id: 'invite-us',
     name: 'Invite Us (Motivational Lecture)',
     description: 'Invite Abdul Rehman Cheema to your office, university, school, or college for an empowering motivational lecture & interactive session.',
-    price: 'PKR 125,000',
     duration: 'Office / Campus Event',
     isPopular: false,
     isLecture: true,
@@ -99,8 +93,8 @@ const packages = [
     id: 'quran-life-batch-02',
     name: 'Quran & Life Batch 02 (Course)',
     description: 'Live interactive cohort course bridging Quranic principles with emotional resilience. Classes on Friday, Saturday & Sunday. Recorded lectures & PDF notes included.',
-    price: 'PKR 100',
     duration: 'Full Course Cohort',
+    price: 'PKR 100',
     isPopular: false,
     isCourse: true,
     features: [
@@ -166,19 +160,21 @@ export default function Packages() {
                 </div>
               )}
 
-              <div className="mb-6">
+              <div className="mb-4">
                 <h3 className="text-xl font-bold mb-2 text-[var(--neu-text)] transition-colors duration-300">
                   {pkg.name}
                 </h3>
-                <p className="text-sm min-h-[4rem] leading-relaxed text-[var(--neu-text-muted)] transition-colors duration-300">
+                <p className="text-sm min-h-[3.5rem] leading-relaxed text-[var(--neu-text-muted)] transition-colors duration-300">
                   {pkg.description}
                 </p>
               </div>
 
               <div className="mb-6">
-                <div className="text-3xl font-extrabold text-[var(--neu-text)] mb-1 transition-colors duration-300">
-                  {pkg.price}
-                </div>
+                {pkg.price && (
+                  <div className="text-2xl font-extrabold text-[var(--neu-text)] mb-1 transition-colors duration-300">
+                    {pkg.price}
+                  </div>
+                )}
                 <div className="text-sm font-bold text-[var(--neu-accent)] transition-colors duration-300">
                   {pkg.duration}
                 </div>
