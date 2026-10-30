@@ -1,78 +1,21 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import WhyCounseling from './components/WhyCounseling';
-import Courses from './components/Courses';
-import Packages from './components/Packages';
-import AboutMe from './components/AboutMe';
-import SocialMedia from './components/SocialMedia';
-import Footer from './components/Footer';
-import eMeetingImg from './assets/E-meet.webp';
-import physicalImg from './assets/P-meet.webp';
-import inviteUsImg from './assets/Invite-us.webp';
 
 export default function HomePage() {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = "Abdul Rehman Cheema (ARC) — Islamic Counselling & Life Guidance";
-    if (location.state?.scrollToHash) {
-      const element = document.querySelector(location.state.scrollToHash);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }, 150);
-      }
-    }
-  }, [location]);
+    document.title = 'Abdul Rehman Cheema (ARC) | Counselling & Career Mentorship';
+  }, []);
 
   return (
-    <div className="min-h-screen font-sans overflow-x-hidden pt-20 bg-[var(--neu-base)] text-[var(--neu-text)] transition-colors duration-300">
-      <Navbar />
-
-      <div id="home" className="relative bg-[var(--neu-base)] transition-colors duration-300">
-        <Hero />
-      </div>
-
-      <div className="relative bg-[var(--neu-base)] transition-colors duration-300">
-        <WhyCounseling />
-      </div>
-
-      {/* E-Meeting, Physical & Invite Us Images */}
-      <div className="relative bg-[var(--neu-base)] transition-colors duration-300 py-10 md:py-16">
-        <div className="container mx-auto px-6 md:px-12 max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <div className="group relative overflow-hidden rounded-xl border border-[var(--neu-border)] transition-all duration-300 hover:border-[var(--neu-accent)] shadow-md">
-              <img src={eMeetingImg} alt="E-Meeting Counselling Session — Online Consultation with Abdul Rehman Cheema" loading="lazy" decoding="async" className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" />
-            </div>
-            <div className="group relative overflow-hidden rounded-xl border border-[var(--neu-border)] transition-all duration-300 hover:border-[var(--neu-accent)] shadow-md">
-              <img src={physicalImg} alt="Physical In-Person Counselling Meeting — Consultation with Abdul Rehman Cheema" loading="lazy" decoding="async" className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" />
-            </div>
-            <div className="group relative overflow-hidden rounded-xl border border-[var(--neu-border)] transition-all duration-300 hover:border-[var(--neu-accent)] shadow-md">
-              <img src={inviteUsImg} alt="Invite Us — Motivational Lecture at Office, University, School or College" loading="lazy" decoding="async" className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="relative bg-[var(--neu-base)] transition-colors duration-300">
-        <Packages />
-      </div>
-
-      <div className="relative bg-[var(--neu-base)] transition-colors duration-300">
-        <Courses />
-      </div>
-
-      <div className="relative bg-[var(--neu-base)] transition-colors duration-300">
-        <AboutMe />
-      </div>
-
-      <div className="relative bg-[var(--neu-base)] transition-colors duration-300">
-        <SocialMedia />
-      </div>
-
-      <Footer />
-    </div>
+    <main className="fixed inset-0 z-0 bg-black">
+      <iframe
+        title="Abdul Rehman Cheema counselling and career mentorship home page"
+        src={`/main02.html${location.hash}`}
+        className="block h-full w-full border-0"
+        allow="clipboard-write"
+      />
+    </main>
   );
 }

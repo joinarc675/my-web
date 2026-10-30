@@ -1,16 +1,15 @@
-# React + Vite
+# ARC Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React and Vite site with a standalone home page, booking flow, and Career Mentorship page.
 
-Currently, two official plugins are available:
+## Cloudflare deployment
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This repository is configured for Cloudflare Workers Static Assets. Wrangler serves the Vite `dist` output and falls back to `index.html` for the React routes.
 
-## React Compiler
+1. Install project dependencies with `npm install`.
+2. Authenticate Wrangler once with `npx wrangler login`, then confirm the account with `npx wrangler whoami`.
+3. Deploy with `npm run deploy:cloudflare`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The script builds the site before deploying it. Vite copies `public/main02.html` into `dist`, and `vite.config.js` includes `career-mentorship.html` as a separate build entry. The script targets the Workers Static Assets config in `wrangler.jsonc`. If using Cloudflare Pages Git integration instead, set the build command to `npm run build` and the output directory to `dist`; that is a separate deployment target.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+`wrangler.jsonc` keeps the `workers.dev` URL disabled. A custom domain or route must already be attached to the Worker in the Cloudflare dashboard for the deployed site to be reachable. To use a `workers.dev` URL, enable it in the dashboard and update the Wrangler setting accordingly.
