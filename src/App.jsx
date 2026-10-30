@@ -20,6 +20,12 @@ function PixelTracker() {
   return null;
 }
 
+function WhatsAppWidgetOutsideHome() {
+  const location = useLocation();
+
+  return location.pathname === '/' ? null : <WhatsAppWidget />;
+}
+
 function App() {
   return (
     <ThemeProvider>
@@ -35,7 +41,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsAndConditions />} />
         </Routes>
-        <WhatsAppWidget />
+        <WhatsAppWidgetOutsideHome />
       </BrowserRouter>
     </ThemeProvider>
   );
