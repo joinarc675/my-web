@@ -1,0 +1,208 @@
+/* Scoped styles for the Career Counselling Page */
+
+.career-counselling-page {
+  --cc-forest: #06231D;
+  --cc-dark-bg: #041713;
+  --cc-gold: #E8C477;
+  --cc-gold-hover: #dfb763;
+  --cc-gold-muted: rgba(232, 196, 119, 0.2);
+  --cc-soft-white: #F7F7F4;
+  --cc-muted: #D9DDD7;
+}
+
+/* Hero Section */
+.career-hero-container {
+  position: relative;
+  min-height: 440px;
+  background-color: var(--cc-dark-bg);
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .career-hero-container {
+    min-height: 480px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .career-hero-container {
+    min-height: 520px;
+    max-height: 580px;
+  }
+}
+
+.career-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 75% center;
+}
+
+@media (min-width: 768px) {
+  .career-hero-bg {
+    background-position: 68% center;
+  }
+}
+
+@media (min-width: 1024px) {
+  .career-hero-bg {
+    background-position: right center;
+  }
+}
+
+/* Gradient Overlays:
+   Dark on left to ensure high text contrast,
+   fades softly towards right so mountaineer & sunrise remain vivid */
+.career-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(4, 23, 19, 0.96) 0%,
+    rgba(4, 23, 19, 0.90) 38%,
+    rgba(4, 23, 19, 0.65) 60%,
+    rgba(6, 35, 29, 0.25) 80%,
+    rgba(6, 35, 29, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .career-hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(4, 23, 19, 0.85) 0%,
+      rgba(4, 23, 19, 0.92) 50%,
+      rgba(4, 23, 19, 0.98) 100%
+    );
+  }
+}
+
+/* Bottom subtle blend */
+.career-hero-bottom-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to top, var(--neu-base), transparent);
+  pointer-events: none;
+}
+
+/* Warm Gold Headline Accent */
+.career-hero-clarity {
+  color: var(--cc-gold);
+  text-shadow: 0 0 25px rgba(232, 196, 119, 0.35);
+  display: inline-block;
+}
+
+/* Hero CTA Buttons */
+.career-btn-primary {
+  background-color: var(--cc-gold);
+  color: #041713;
+  font-weight: 700;
+  border: 1px solid var(--cc-gold);
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 16px rgba(232, 196, 119, 0.25);
+  cursor: pointer;
+}
+
+.career-btn-primary:hover {
+  background-color: var(--cc-gold-hover);
+  border-color: var(--cc-gold-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(232, 196, 119, 0.35);
+}
+
+.career-btn-primary:active {
+  transform: translateY(0);
+}
+
+.career-btn-secondary {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--cc-soft-white);
+  font-weight: 600;
+  border: 1px solid rgba(232, 196, 119, 0.5);
+  backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.career-btn-secondary:hover {
+  background-color: rgba(232, 196, 119, 0.15);
+  border-color: var(--cc-gold);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.career-btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* Process Cards */
+.career-process-card {
+  position: relative;
+  background: var(--neu-card-bg);
+  border: 1px solid var(--neu-border);
+  border-radius: 1rem;
+  padding: 1.75rem 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+}
+
+.career-process-card:hover {
+  border-color: var(--neu-accent);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(184, 121, 31, 0.12);
+}
+
+.dark .career-process-card:hover {
+  box-shadow: 0 10px 28px rgba(240, 168, 56, 0.08);
+}
+
+.career-step-badge {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--neu-accent);
+  opacity: 0.85;
+}
+
+/* FAQ Accordion Focus & Smoothness */
+.career-faq-trigger:focus-visible {
+  outline: 2px solid var(--neu-accent);
+  outline-offset: 2px;
+}
+
+/* Aspect ratio utility for 9:16 vertical video cards */
+.aspect-9-16 {
+  aspect-ratio: 9 / 16;
+}
+
+/* Reduced Motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .career-hero-container *,
+  .career-process-card,
+  .career-btn-primary,
+  .career-btn-secondary {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Hide scrollbar utility for clean modal UI */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+}
+
